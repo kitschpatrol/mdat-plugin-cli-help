@@ -1,0 +1,73 @@
+{
+	"name": "mdat-plugin-cli-help",
+	"version": "0.0.0",
+	"description": "Mdat plugin to generate tabular CLI tool documentation in Markdown files.",
+	"keywords": [
+		"markdown",
+		"mdat-plugin",
+		"mdat",
+		"cli",
+		"npm-package"
+	],
+	"homepage": "https://github.com/kitschpatrol/mdat-plugin-cli-help",
+	"bugs": "https://github.com/kitschpatrol/mdat-plugin-cli-help/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kitschpatrol/mdat-plugin-cli-help.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Eric Mika",
+		"email": "eric@ericmika.com",
+		"url": "https://ericmika.com"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"files": [
+		"dist/*"
+	],
+	"scripts": {
+		"build": "tsdown --tsconfig tsconfig.build.json",
+		"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
+		"fix": "ksc fix",
+		"lint": "ksc lint",
+		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
+		"test": "vitest --no-file-parallelism"
+	},
+	"dependencies": {
+		"@types/which": "^3.0.4",
+		"execa": "^9.6.0",
+		"read-pkg": "^9.0.1",
+		"type-fest": "^5.2.0",
+		"which": "^5.0.0"
+	},
+	"devDependencies": {
+		"@kitschpatrol/shared-config": "^5.7.4",
+		"@types/node": "^20.19.24",
+		"bumpp": "^10.3.1",
+		"chevrotain": "^11.0.3",
+		"meow": "^14.0.0",
+		"tsdown": "^0.15.12",
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.6",
+		"zod": "^3.25.76"
+	},
+	"peerDependencies": {
+		"mdat": "^1.1.0",
+		"remark-mdat": "^1.1.0"
+	},
+	"packageManager": "pnpm@10.20.0",
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
