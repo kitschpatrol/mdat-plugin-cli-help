@@ -11,7 +11,7 @@ import process from 'node:process'
 const isWindows: boolean = process.platform === 'win32'
 
 const pathExtensions: Set<string> = isWindows
-	? new Set(process.env.PATHEXT?.split(';').map((extension) => extension.toLowerCase()) ?? [])
+	? new Set(process.env.PATHEXT?.split(';').map((extension) => extension.toLowerCase()))
 	: new Set()
 
 /**

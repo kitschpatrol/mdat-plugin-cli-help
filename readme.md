@@ -15,7 +15,7 @@
 
 <!-- short-description -->
 
-**Mdat plugin to generate tabular CLI tool documentation in Markdown files.**
+**Mdat plugin to generate tabular help documentation for CLI tools in Markdown files.**
 
 <!-- /short-description -->
 

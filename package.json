@@ -1,7 +1,7 @@
 {
 	"name": "mdat-plugin-cli-help",
 	"version": "1.0.1",
-	"description": "Mdat plugin to generate tabular CLI tool documentation in Markdown files.",
+	"description": "Mdat plugin to generate tabular help documentation for CLI tools in Markdown files.",
 	"keywords": [
 		"markdown",
 		"mdat-plugin",
@@ -34,7 +34,7 @@
 		"dist/*"
 	],
 	"scripts": {
-		"build": "tsdown --tsconfig tsconfig.build.json",
+		"build": "tsdown --no-fixed-extension --tsconfig tsconfig.build.json",
 		"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
 		"fix": "ksc fix",
 		"lint": "ksc lint",
@@ -49,14 +49,14 @@
 		"which": "^5.0.0"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^5.7.4",
+		"@kitschpatrol/shared-config": "^5.8.1",
 		"@types/node": "^20.19.24",
 		"bumpp": "^10.3.1",
 		"chevrotain": "^11.0.3",
 		"meow": "^14.0.0",
-		"tsdown": "^0.15.12",
+		"tsdown": "^0.16.0",
 		"typescript": "~5.9.3",
-		"vitest": "^4.0.6",
+		"vitest": "^4.0.7",
 		"zod": "^3.25.76"
 	},
 	"peerDependencies": {
