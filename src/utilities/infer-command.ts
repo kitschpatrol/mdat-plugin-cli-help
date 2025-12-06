@@ -12,19 +12,20 @@ import { isExecutable } from './is-executable'
  */
 export async function inferCommand(cliCommand: string | undefined): Promise<string> {
 	cliCommand ??= await getFirstBinFromPackage()
-
 	return ensureExecutable(cliCommand)
 }
 
 async function getFirstBinFromPackage(): Promise<string> {
 	// See if there's a command defined in the package.json
-	const packageJson = await getPackageJson()
+	const { packageJson, packagePath } = await getPackageJson()
+	const packageDirectory = path.dirname(packagePath)
 
 	if (packageJson.bin) {
 		const binPath =
 			typeof packageJson.bin === 'string'
-				? packageJson.bin
-				: String(Object.values(packageJson.bin).at(0))
+				? path.resolve(packageDirectory, packageJson.bin)
+				: path.resolve(packageDirectory, String(Object.values(packageJson.bin).at(0)))
+
 		if (looksLikePath(binPath)) {
 			log.info(`Inferred <!-- cli-help --> command to run from package.json: ${binPath}`)
 			return binPath
@@ -41,13 +42,15 @@ function looksLikePath(maybePath: string): boolean {
 	return parsed.root !== '' || parsed.dir !== ''
 }
 
-async function ensureExecutable(path: string): Promise<string> {
+async function ensureExecutable(filePath: string): Promise<string> {
 	// In case a something on the path is passed
 	// `which` returns null, but we convert that to undefined
-	let resolvedPath: string | undefined = (await which(path, { nothrow: true })) ?? undefined
+	let resolvedPath: string | undefined = path.isAbsolute(filePath)
+		? filePath
+		: ((await which(filePath, { nothrow: true })) ?? undefined)
 
 	// Check package.json for a package-local path if it's not on the path
-	resolvedPath ??= (await getCommandPathFromPackage(path)) ?? undefined
+	resolvedPath ??= (await getCommandPathFromPackage(filePath)) ?? undefined
 
 	if (resolvedPath !== undefined && (await isExecutable(resolvedPath))) {
 		return resolvedPath
@@ -60,6 +63,17 @@ async function ensureExecutable(path: string): Promise<string> {
 // its local path from package.json
 async function getCommandPathFromPackage(commandName: string): Promise<string | undefined> {
 	// Redundant package lookup, but it's cached and this is more atomic
-	const packageJson = await getPackageJson()
-	return packageJson.bin?.[commandName] ?? undefined
+	const { packageJson } = await getPackageJson()
+
+	// Check all bin entries and values for a match
+	for (const [key, value] of Object.entries(packageJson.bin ?? {})) {
+		if (key === commandName) {
+			return value
+		}
+		if (path.normalize(value) === path.normalize(commandName)) {
+			return value
+		}
+	}
+
+	return undefined
 }

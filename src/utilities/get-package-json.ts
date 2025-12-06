@@ -12,7 +12,10 @@ let packageJson: NormalizedPackageJson | undefined
  * Rules could call this themselves, but this is more convenient and efficient
  * @throws {Error} If no package.json is found
  */
-export async function getPackageJson(): Promise<NormalizedPackageJson> {
+export async function getPackageJson(): Promise<{
+	packageJson: NormalizedPackageJson
+	packagePath: string
+}> {
 	const { packageFile } = await loadConfig()
 	if (packageFile === undefined) {
 		throw new Error('No packageFile found or set in config')
@@ -20,5 +23,8 @@ export async function getPackageJson(): Promise<NormalizedPackageJson> {
 
 	packageJson ??= await readPackage({ cwd: path.dirname(packageFile) })
 
-	return packageJson
+	return {
+		packageJson,
+		packagePath: packageFile,
+	}
 }
