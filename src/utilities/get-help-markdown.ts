@@ -1,8 +1,8 @@
 import { execaCommand } from 'execa'
-import { log } from 'remark-mdat'
 import type { ProgramInfo } from './parsers/index'
 import { helpObjectToMarkdown } from './help-object-to-markdown'
 import { helpStringToObject } from './help-string-to-object'
+import { log } from './log'
 
 /**
  * Get help output from a CLI command and return it as markdown
@@ -43,7 +43,7 @@ async function renderHelpMarkdownObject(
 	programInfo: ProgramInfo,
 ): Promise<string> {
 	if (depth <= 0) {
-		log.info(`Max CLI command help depth reached, stopping recursion`)
+		log.warn(`Max CLI command help depth reached, stopping recursion`)
 		return ''
 	}
 
