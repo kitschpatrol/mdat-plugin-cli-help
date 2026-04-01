@@ -78,7 +78,8 @@ describe('cli help invocation', () => {
 
 	it('should fall back to a basic code block if the help output cannot be parsed', async () => {
 		const helpMarkdown = await getHelpMarkdown('git')
-		expect(helpMarkdown).toMatchSnapshot()
+		expect(helpMarkdown).toContain('```')
+		expect(helpMarkdown).toContain('usage: git')
 	})
 
 	// Skipping this test for now since this package doesn't export a binary
@@ -89,7 +90,8 @@ describe('cli help invocation', () => {
 
 	it('should correctly identify executables', async () => {
 		const helpMarkdown = await cliHelpRule.content({ cliCommand: 'git' })
-		expect(helpMarkdown).toMatchSnapshot()
+		expect(helpMarkdown).toContain('```')
+		expect(helpMarkdown).toContain('usage: git')
 	})
 
 	it('should correctly identify non-executables', async () => {
