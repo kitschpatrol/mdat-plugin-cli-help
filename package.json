@@ -55,16 +55,16 @@
 		"@kitschpatrol/shared-config": "^6.1.0",
 		"@types/node": "~20.19.37",
 		"bumpp": "^11.0.1",
-		"mdat": "^1.4.2",
+		
 		"meow": "^14.1.0",
-		"remark-mdat": "^1.2.5",
+		"remark-mdat": "^2.0.0-preview.3",
 		"tsdown": "^0.21.7",
 		"typescript": "~5.9.3",
 		"vitest": "^4.1.2"
 	},
 	"peerDependencies": {
 		"mdat": "^1.1.0",
-		"remark-mdat": "^1.1.0"
+		"remark-mdat": "^2.0.0-preview.3"
 	},
 	"packageManager": "pnpm@10.33.0",
 	"engines": {
