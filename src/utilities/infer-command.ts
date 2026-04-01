@@ -1,8 +1,8 @@
 import path from 'node:path'
-import { log } from 'remark-mdat'
 import which from 'which'
 import { getPackageJson } from './get-package-json'
 import { isExecutable } from './is-executable'
+import { log } from './log'
 
 /**
  * Accommodate missing or sloppy cli help command input
@@ -27,7 +27,7 @@ async function getFirstBinFromPackage(): Promise<string> {
 				: path.resolve(packageDirectory, String(Object.values(packageJson.bin).at(0)))
 
 		if (looksLikePath(binPath)) {
-			log.info(`Inferred <!-- cli-help --> command to run from package.json: ${binPath}`)
+			log.debug(`Inferred <!-- cli-help --> command to run from package.json: ${binPath}`)
 			return binPath
 		}
 	}

@@ -1,5 +1,5 @@
-import { log } from 'remark-mdat'
 import type { ProgramInfo } from './parsers/index'
+import { log } from './log'
 import parsers from './parsers/index'
 
 /**
@@ -12,13 +12,13 @@ import parsers from './parsers/index'
  */
 export function helpStringToObject(helpString: string): ProgramInfo | undefined {
 	for (const [parserName, helpStringToObjectFunction] of Object.entries(parsers)) {
-		log.info(`Trying to parse help string with ${parserName} parser...`)
+		log.debug(`Trying to parse help string with ${parserName} parser...`)
 
 		try {
 			return helpStringToObjectFunction(helpString)
 		} catch (error) {
 			if (error instanceof Error) {
-				log.info(`Error in "${parserName}" parser: ${String(error)}`)
+				log.error(`Error in "${parserName}" parser: ${String(error)}`)
 			}
 
 			// Try next parser

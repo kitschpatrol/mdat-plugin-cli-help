@@ -2,6 +2,7 @@ import type { Rules } from 'mdat'
 import { z } from 'zod'
 import { getHelpMarkdown } from './utilities/get-help-markdown'
 import { inferCommand } from './utilities/infer-command'
+export { setLogger } from './utilities/log'
 
 const cliHelpRule = {
 	async content(options?) {
@@ -18,7 +19,9 @@ const cliHelpRule = {
 	},
 } satisfies Rules[string]
 
-export default {
+const rules: Rules = {
 	cli: cliHelpRule,
 	'cli-help': cliHelpRule,
-} satisfies Rules
+}
+
+export default rules
