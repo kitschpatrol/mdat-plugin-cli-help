@@ -1,6 +1,6 @@
+import { getContextMetadata } from 'mdat'
 import path from 'node:path'
 import which from 'which'
-import { getPackageJson } from './get-package-json'
 import { isExecutable } from './is-executable'
 import { log } from './log'
 
@@ -15,16 +15,25 @@ export async function inferCommand(cliCommand: string | undefined): Promise<stri
 	return ensureExecutable(cliCommand)
 }
 
+function firstOf<T>(value: T | T[] | undefined): T | undefined {
+	if (value === undefined) return undefined
+	return Array.isArray(value) ? value[0] : value
+}
+
 async function getFirstBinFromPackage(): Promise<string> {
 	// See if there's a command defined in the package.json
-	const { packageJson, packagePath } = await getPackageJson()
-	const packageDirectory = path.dirname(packagePath)
 
-	if (packageJson.bin) {
+	const { nodePackageJson } = await getContextMetadata()
+	const nodePackage = firstOf(nodePackageJson)
+
+	if (nodePackage?.source !== undefined && nodePackage.data.bin !== undefined) {
+		const packageDirectory = path.dirname(nodePackage.source)
+		const packageBin = nodePackage.data.bin
+
 		const binPath =
-			typeof packageJson.bin === 'string'
-				? path.resolve(packageDirectory, packageJson.bin)
-				: path.resolve(packageDirectory, String(Object.values(packageJson.bin).at(0)))
+			typeof packageBin === 'string'
+				? path.resolve(packageDirectory, packageBin)
+				: path.resolve(packageDirectory, String(Object.values(packageBin).at(0)))
 
 		if (looksLikePath(binPath)) {
 			log.debug(`Inferred <!-- cli-help --> command to run from package.json: ${binPath}`)
@@ -33,7 +42,7 @@ async function getFirstBinFromPackage(): Promise<string> {
 	}
 
 	throw new Error(
-		`Could not infer which command to run for the <!-- cli-help --> rule. Please pass a "cliCommand" option to the expansion comment, e.g. <!-- cli-help {cliCommand: './dist/bin.js'} -->`,
+		`Could not infer which command to run for the <!-- cli-help --> rule. Please pass a "cliCommand" option to the expansion comment, e.g. <!-- cli-help({cliCommand: './dist/bin.js'}) -->`,
 	)
 }
 
@@ -63,15 +72,20 @@ async function ensureExecutable(filePath: string): Promise<string> {
 // its local path from package.json
 async function getCommandPathFromPackage(commandName: string): Promise<string | undefined> {
 	// Redundant package lookup, but it's cached and this is more atomic
-	const { packageJson } = await getPackageJson()
 
-	// Check all bin entries and values for a match
-	for (const [key, value] of Object.entries(packageJson.bin ?? {})) {
-		if (key === commandName) {
-			return value
-		}
-		if (path.normalize(value) === path.normalize(commandName)) {
-			return value
+	const { nodePackageJson } = await getContextMetadata()
+	const nodePackage = firstOf(nodePackageJson)
+	const binObject = nodePackage?.data.bin
+
+	if (binObject !== undefined && typeof binObject !== 'string') {
+		// Check all bin entries and values for a match
+		for (const [key, value] of Object.entries(binObject)) {
+			if (key === commandName) {
+				return value
+			}
+			if (path.normalize(value) === path.normalize(commandName)) {
+				return value
+			}
 		}
 	}
 

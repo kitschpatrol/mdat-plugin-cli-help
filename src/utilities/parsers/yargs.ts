@@ -6,7 +6,7 @@
 /* eslint-disable ts/no-unsafe-return */
 /* eslint-disable ts/no-explicit-any */
 /* eslint-disable ts/no-unsafe-member-access */
-/* eslint-disable unicorn/consistent-function-scoping */
+
 /* eslint-disable new-cap */
 /* eslint-disable ts/naming-convention */
 

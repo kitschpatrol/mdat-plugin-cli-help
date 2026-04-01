@@ -45,14 +45,12 @@ pnpm add -D mdat-plugin-cli-help
 Register the plugin in your mdat config file, e.g. `mdat.config.ts`:
 
 ```ts
-import type { Config } from 'mdat'
+import { defineConfig } from 'mdat'
 import cliHelp from 'mdat-plugin-cli-help'
 
-export default {
-  rules: {
-    ...cliHelp,
-  },
-} satisfies Config
+export default defineConfig({
+  ...cliHelp,
+})
 ```
 
 ## Usage
@@ -60,13 +58,13 @@ export default {
 Assuming you have an executable with a `--help` flag on your path or in your project's scope:
 
 ```markdown
-<!-- cli-help { cliCommand: "mdat", depth: 1 } -->
+<!-- cli-help({ cliCommand: "mdat", depth: 1 }) -->
 ```
 
 Then run the `mdat` CLI command on your Markdown file to expand the rule and embed the tabular help output:
 
 ````markdown
-<!-- cli-help { cliCommand: "mdat", depth: 1 } -->
+<!-- cli-help({ cliCommand: "mdat", depth: 1 }) -->
 
 #### Command: `mdat`
 
@@ -112,7 +110,7 @@ The command is also aliased under the `<!-- cli -->` keyword.
 This would have equivalent output to the above:
 
 ```markdown
-<!-- cli { cliCommand: "mdat", depth: 1 } -->
+<!-- cli({ cliCommand: "mdat", depth: 1 }) -->
 ```
 
 If you embed the rule without any arguments, it will look for the binary file listed in the closest `package.json` file and run it with `--help`. This is what you want if you're documenting a package's CLI options in its readme.md file:

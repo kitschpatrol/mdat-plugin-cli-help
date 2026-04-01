@@ -11,7 +11,6 @@ import { helpStringToObject } from '../src/utilities/help-string-to-object'
 
 const cliHelpRule = cliHelpPlugin['cli-help']
 
-// Need Node 20.11 for import.meta.dirname?
 const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Load all --help command output samples in ./assets/help-supported
@@ -84,21 +83,33 @@ describe('cli help invocation', () => {
 
 	// Skipping this test for now since this package doesn't export a binary
 	it.skip('should try to infer the binary to get help from based on package.json', async () => {
+		// TODO figure this out
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
 		const helpMarkdown = await cliHelpRule.content()
 		expect(helpMarkdown).toMatchSnapshot()
 	})
 
 	it('should correctly identify executables', async () => {
+		// TODO figure this out
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
 		const helpMarkdown = await cliHelpRule.content({ cliCommand: 'git' })
 		expect(helpMarkdown).toContain('```')
 		expect(helpMarkdown).toContain('usage: git')
 	})
 
 	it('should correctly identify non-executables', async () => {
+		// TODO figure this out
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-call
 		await expect(cliHelpRule.content({ cliCommand: '/dev/null' })).rejects.toThrow()
 	})
 
 	it('should correctly resolve binary names that are in package.json but not on the path', async () => {
+		// TODO figure this out
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
 		const helpMarkdown = await cliHelpRule.content({ cliCommand: 'mdat' })
 		expect(helpMarkdown).toMatchSnapshot()
 	})
