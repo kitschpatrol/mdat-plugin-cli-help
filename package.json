@@ -35,6 +35,8 @@
 		"dist/*"
 	],
 	"scripts": {
+		"bench": "vitest bench --no-file-parallelism --compare test/benchmarks/baseline.json",
+		"bench:baseline": "vitest bench --no-file-parallelism --outputJson test/benchmarks/baseline.json",
 		"build": "tsdown --no-fixed-extension --tsconfig tsconfig.build.json",
 		"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
 		"fix": "ksc fix",
@@ -46,13 +48,13 @@
 		"@types/which": "^3.0.4",
 		"chevrotain": "^12.0.0",
 		"execa": "^9.6.1",
-		"lognow": "^0.5.2",
+		"lognow": "^0.6.0",
 		"type-fest": "^5.5.0",
 		"which": "^6.0.1",
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^6.2.0",
+		"@kitschpatrol/shared-config": "^7.0.0",
 		"@types/node": "~22.17.2",
 		"bumpp": "^11.0.1",
 		"mdat": "^2.0.0",

@@ -18,7 +18,7 @@ export function helpStringToObject(helpString: string): ProgramInfo | undefined 
 			return helpStringToObjectFunction(helpString)
 		} catch (error) {
 			if (error instanceof Error) {
-				log.error(`Error in "${parserName}" parser: ${String(error)}`)
+				log.debug(`Parser "${parserName}" did not match: ${String(error)}`)
 			}
 
 			// Try next parser
@@ -26,6 +26,6 @@ export function helpStringToObject(helpString: string): ProgramInfo | undefined 
 		}
 	}
 
-	log.error('Could not parse help string with any parser')
+	log.warn('Could not parse help string with any parser')
 	return undefined
 }

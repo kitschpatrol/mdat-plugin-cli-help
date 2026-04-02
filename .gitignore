@@ -21,3 +21,5 @@ vendor/
 
 # Customizations
 /.claude
+/test/benchmarks/*
+!/test/benchmarks/baseline.json
