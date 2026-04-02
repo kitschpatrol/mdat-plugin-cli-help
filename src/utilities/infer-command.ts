@@ -52,20 +52,29 @@ function looksLikePath(maybePath: string): boolean {
 }
 
 async function ensureExecutable(filePath: string): Promise<string> {
-	// In case a something on the path is passed
-	// `which` returns null, but we convert that to undefined
-	let resolvedPath: string | undefined = path.isAbsolute(filePath)
-		? filePath
-		: ((await which(filePath, { nothrow: true })) ?? undefined)
+	// Absolute paths are used as-is
+	if (path.isAbsolute(filePath)) {
+		if (await isExecutable(filePath)) {
+			return filePath
+		}
 
-	// Check package.json for a package-local path if it's not on the path
-	resolvedPath ??= (await getCommandPathFromPackage(filePath)) ?? undefined
-
-	if (resolvedPath !== undefined && (await isExecutable(resolvedPath))) {
-		return resolvedPath
+		throw new Error(`The cli-help rule noticed that "${filePath}" is not executable.`)
 	}
 
-	throw new Error(`The cli-help rule noticed that "${resolvedPath}" is not executable.`)
+	// Check if it's on the PATH — return the original name rather than the
+	// resolved path so execa with `preferLocal` can handle platform-specific
+	// shims (e.g. .cmd files on Windows) correctly
+	if ((await which(filePath, { nothrow: true })) !== null) {
+		return filePath
+	}
+
+	// Fall back to looking up the command in the closest package.json
+	const packagePath = await getCommandPathFromPackage(filePath)
+	if (packagePath !== undefined && (await isExecutable(packagePath))) {
+		return packagePath
+	}
+
+	throw new Error(`The cli-help rule noticed that "${filePath}" is not executable.`)
 }
 
 // If we pass e.g. 'mdat', but it's not installed globally, we can try to look up

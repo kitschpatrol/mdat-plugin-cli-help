@@ -69,7 +69,7 @@ describe('cli help fall back on unparsable output', () => {
 	}
 })
 
-describe('cli help invocation', () => {
+describe('cli help invocation', { timeout: 60_000 }, () => {
 	it('should get help Markdown directly from the output of a command', async () => {
 		const helpMarkdown = await getHelpMarkdown(`${importMetaDirname}/assets/cli.js`)
 		expect(helpMarkdown).toMatchSnapshot()

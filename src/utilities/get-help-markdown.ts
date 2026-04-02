@@ -1,4 +1,4 @@
-import { execaCommand } from 'execa'
+import { execa } from 'execa'
 import type { ProgramInfo } from './parsers/index'
 import { helpObjectToMarkdown } from './help-object-to-markdown'
 import { helpStringToObject } from './help-string-to-object'
@@ -6,17 +6,27 @@ import { log } from './log'
 
 /**
  * Get help output from a CLI command and return it as markdown
+ *
+ * @param cliCommand - The executable path (may contain spaces, e.g. on Windows)
+ * @param helpFlag - The flag to pass to get help output
+ * @param depth - Max recursion depth for subcommands
  */
 export async function getHelpMarkdown(
 	cliCommand: string,
 	helpFlag = '--help',
 	depth?: number,
 ): Promise<string> {
-	// Run the CLI help command
-	const resolvedCommand = `${cliCommand} ${helpFlag}`
+	return getHelpMarkdownInternal(cliCommand, [], helpFlag, depth ?? Number.MAX_SAFE_INTEGER)
+}
 
+async function getHelpMarkdownInternal(
+	executable: string,
+	subcommands: string[],
+	helpFlag: string,
+	depth: number,
+): Promise<string> {
 	// Throws
-	const rawHelpString = await getHelpString(resolvedCommand)
+	const rawHelpString = await getHelpString(executable, [...subcommands, helpFlag])
 
 	// Attempt to parse typical Yargs help output
 	const programInfo = helpStringToObject(rawHelpString)
@@ -27,17 +37,13 @@ export async function getHelpMarkdown(
 		return renderHelpMarkdownBasic(rawHelpString)
 	}
 
-	// This might recurse back to getHelpMarkdown if there are subcommands
-	return renderHelpMarkdownObject(
-		cliCommand,
-		helpFlag,
-		depth ?? Number.MAX_SAFE_INTEGER,
-		programInfo,
-	)
+	// This might recurse for subcommands
+	return renderHelpMarkdownObject(executable, subcommands, helpFlag, depth, programInfo)
 }
 
 async function renderHelpMarkdownObject(
-	cliCommand: string,
+	executable: string,
+	subcommands: string[],
 	helpFlag: string,
 	depth: number,
 	programInfo: ProgramInfo,
@@ -49,15 +55,13 @@ async function renderHelpMarkdownObject(
 
 	let markdown = helpObjectToMarkdown(programInfo, depth)
 
-	// TODO solve the recursion issue for real
-	const baseCommand = cliCommand.split(' ')[0]
-
 	// Check for subcommands
 	if (programInfo.commands) {
 		for (const command of programInfo.commands) {
 			if (!command.parentCommandName || !command.commandName) continue
-			const subCommandHelp = await getHelpMarkdown(
-				`${baseCommand} ${command.commandName}`,
+			const subCommandHelp = await getHelpMarkdownInternal(
+				executable,
+				[...subcommands, command.commandName],
 				helpFlag,
 				depth - 1,
 			)
@@ -80,13 +84,15 @@ export function renderHelpMarkdownBasic(rawHelpString: string): string {
 
 /**
  * Run the CLI help command and return the output, throw if there's no output
+ *
+ * @returns The full help string from the resolved command
  * @throws {TypeError} If there's an error running the CLI help command
- * @returns the full help string from the resolved command
  */
-async function getHelpString(resolvedCommand: string): Promise<string> {
+async function getHelpString(command: string, args: string[]): Promise<string> {
+	const displayCommand = `${command} ${args.join(' ')}`
 	let rawHelpString: string | undefined
 	try {
-		const { stderr, stdout } = await execaCommand(resolvedCommand)
+		const { stderr, stdout } = await execa(command, args, { preferLocal: true })
 		rawHelpString = stdout
 
 		// eslint-disable-next-line ts/no-unnecessary-condition
@@ -95,14 +101,12 @@ async function getHelpString(resolvedCommand: string): Promise<string> {
 		}
 	} catch (error) {
 		if (error instanceof Error) {
-			throw new TypeError(
-				`Error running CLI help command: "${resolvedCommand}"\n${error.message}\n`,
-			)
+			throw new TypeError(`Error running CLI help command: "${displayCommand}"\n${error.message}\n`)
 		}
 	}
 
 	if (rawHelpString === undefined || rawHelpString === '') {
-		throw new Error(`No result from running CLI help command: "${resolvedCommand}"\n`)
+		throw new Error(`No result from running CLI help command: "${displayCommand}"\n`)
 	}
 
 	return rawHelpString
