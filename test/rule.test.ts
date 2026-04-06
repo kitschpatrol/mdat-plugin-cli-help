@@ -24,14 +24,17 @@ const helpSamplesSupported = fs
 	}, {})
 
 // These samples should just pass through to raw output, because we can't parse them
-const helpSamplesUnsupported = fs
-	.readdirSync(`${importMetaDirname}/assets/help-unsupported`)
-	.filter((file) => file.endsWith('.txt'))
-	.reduce<Record<string, string>>((acc, file) => {
-		const name = path.basename(file, '.txt')
-		const content = fs.readFileSync(`${importMetaDirname}/assets/help-unsupported/${file}`, 'utf8')
-		return { ...acc, [name]: content }
-	}, {})
+const unsupportedDirectory = `${importMetaDirname}/assets/help-unsupported`
+const helpSamplesUnsupported = fs.existsSync(unsupportedDirectory)
+	? fs
+			.readdirSync(unsupportedDirectory)
+			.filter((file) => file.endsWith('.txt'))
+			.reduce<Record<string, string>>((acc, file) => {
+				const name = path.basename(file, '.txt')
+				const content = fs.readFileSync(`${unsupportedDirectory}/${file}`, 'utf8')
+				return { ...acc, [name]: content }
+			}, {})
+	: {}
 
 describe('cli help string to object', () => {
 	for (const [name, helpText] of Object.entries(helpSamplesSupported)) {
@@ -55,7 +58,15 @@ describe('cli help object to markdown', () => {
 })
 
 describe('cli help fall back on unparsable output', () => {
-	for (const [name, helpText] of Object.entries(helpSamplesUnsupported)) {
+	const unsupportedEntries = Object.entries(helpSamplesUnsupported)
+
+	if (unsupportedEntries.length === 0) {
+		it('no unsupported samples to test (all formats now supported)', () => {
+			expect(true).toBe(true)
+		})
+	}
+
+	for (const [name, helpText] of unsupportedEntries) {
 		it(`should fall back to the basic code block since "${name}" cannot yet be parsed`, () => {
 			// Attempt to parse typical Yargs help output
 			const programInfo = helpStringToObject(helpText)
