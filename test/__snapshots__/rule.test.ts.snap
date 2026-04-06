@@ -1746,6 +1746,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "add a snippet",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
     {
       "aliases": undefined,
@@ -1754,6 +1755,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "launch a shell in the snippets directory",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
     {
       "aliases": undefined,
@@ -1762,6 +1764,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "list all snippets",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
     {
       "aliases": undefined,
@@ -1770,6 +1773,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "set up snip",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
     {
       "aliases": undefined,
@@ -1780,6 +1784,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "sync snippets to editors",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
     {
       "aliases": undefined,
@@ -1790,6 +1795,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "sync snippets from editors (not yet implemented)",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
     {
       "aliases": undefined,
@@ -1800,6 +1806,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "defaultValue": undefined,
       "description": "display help for command",
       "flags": undefined,
+      "parentCommandName": "snip",
     },
   ],
   "description": "A CLI tool for snippet management.",

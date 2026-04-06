@@ -1,5 +1,91 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`commander recursive subcommand help > should recursively resolve commander subcommand help output 1`] = `
+"#### Command: \`test-cli\`
+
+A test CLI for normalization verification.
+
+This section lists top-level commands for \`test-cli\`.
+
+Usage:
+
+\`\`\`txt
+test-cli [options] [command]
+\`\`\`
+
+| Command | Argument | Description |
+| --- | --- | --- |
+| \`greet\` | \`<name>\` | Greet someone by name |
+| \`serve\` | \`[port]\` | Start a server |
+| \`help\` | \`[command]\` | display help for command |
+
+
+| Option | Argument | Description | Default |
+| --- | --- | --- | --- |
+| \`--version\`<br>\`-V\` |  | output the version number |  |
+| \`--name\`<br>\`-n\` | \`<value>\` | Name to greet | \`world\` |
+| \`--verbose\` |  | Enable verbose output |  |
+| \`--help\`<br>\`-h\` |  | display help for command |  |
+
+
+_See the sections below for more information on each subcommand._
+
+#### Subcommand: \`test-cli greet\`
+
+Greet someone by name
+
+Usage:
+
+\`\`\`txt
+test-cli greet [options] <name>
+\`\`\`
+
+| Option | Description |
+| --- | --- |
+| \`--help\`<br>\`-h\` | display help for command |
+
+
+#### Subcommand: \`test-cli serve\`
+
+Start a server
+
+Usage:
+
+\`\`\`txt
+test-cli serve [options] [port]
+\`\`\`
+
+| Option | Description |
+| --- | --- |
+| \`--help\`<br>\`-h\` | display help for command |
+
+
+#### Command: \`test-cli\`
+
+A test CLI for normalization verification.
+
+Usage:
+
+\`\`\`txt
+test-cli [options] [command]
+\`\`\`
+
+| Command | Argument | Description |
+| --- | --- | --- |
+| \`greet\` | \`<name>\` | Greet someone by name |
+| \`serve\` | \`[port]\` | Start a server |
+| \`help\` | \`[command]\` | display help for command |
+
+
+| Option | Argument | Description | Default |
+| --- | --- | --- | --- |
+| \`--version\`<br>\`-V\` |  | output the version number |  |
+| \`--name\`<br>\`-n\` | \`<value>\` | Name to greet | \`world\` |
+| \`--verbose\` |  | Enable verbose output |  |
+| \`--help\`<br>\`-h\` |  | display help for command |  |
+"
+`;
+
 exports[`cross-framework normalization > should parse commander fixture help output 1`] = `
 {
   "arguments": [
@@ -17,6 +103,7 @@ exports[`cross-framework normalization > should parse commander fixture help out
       "defaultValue": undefined,
       "description": "Greet someone by name",
       "flags": undefined,
+      "parentCommandName": "test-cli",
     },
     {
       "aliases": undefined,
@@ -27,6 +114,7 @@ exports[`cross-framework normalization > should parse commander fixture help out
       "defaultValue": undefined,
       "description": "Start a server",
       "flags": undefined,
+      "parentCommandName": "test-cli",
     },
     {
       "aliases": undefined,
@@ -37,6 +125,7 @@ exports[`cross-framework normalization > should parse commander fixture help out
       "defaultValue": undefined,
       "description": "display help for command",
       "flags": undefined,
+      "parentCommandName": "test-cli",
     },
   ],
   "description": "A test CLI for normalization verification.",

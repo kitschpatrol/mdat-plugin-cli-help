@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { ProgramInfo } from '../src/utilities/parsers/index'
+import { getHelpMarkdown } from '../src/utilities/get-help-markdown'
 import { helpStringToObject } from '../src/utilities/help-string-to-object'
 
 const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
@@ -146,5 +147,33 @@ describe('cross-framework normalization', { timeout: 30_000 }, () => {
 		expect(commanderServe).toBeDefined()
 		expect(yargsServe!.description).toBe('Start a server')
 		expect(commanderServe!.description).toBe('Start a server')
+	})
+
+	it('should set parentCommandName on commander commands for recursion', () => {
+		// Commander commands need parentCommandName for the recursive subcommand flow
+		for (const cmd of commanderParsed.commands ?? []) {
+			if (cmd.commandName) {
+				expect(cmd.parentCommandName).toBe('test-cli')
+			}
+		}
+	})
+})
+
+describe('commander recursive subcommand help', { timeout: 30_000 }, () => {
+	it('should recursively resolve commander subcommand help output', async () => {
+		const helpMarkdown = await getHelpMarkdown(`${fixturesDirectory}/commander-cli.js`, '--help', 2)
+
+		// Should contain the top-level command section
+		expect(helpMarkdown).toContain('Command: `test-cli`')
+
+		// Should contain subcommand sections from recursive help calls
+		expect(helpMarkdown).toContain('Subcommand: `test-cli greet`')
+		expect(helpMarkdown).toContain('Subcommand: `test-cli serve`')
+
+		// Should contain subcommand descriptions
+		expect(helpMarkdown).toContain('Greet someone by name')
+		expect(helpMarkdown).toContain('Start a server')
+
+		expect(helpMarkdown).toMatchSnapshot()
 	})
 })

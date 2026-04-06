@@ -38,12 +38,14 @@ export type ProgramInfo = {
 	subcommandName?: string // E.g. calling help on a subcommand
 }
 
-// Run yargs first since I use it more...
+// Commander first since it has a strict "Usage:" prefix check that prevents false positives.
+// Yargs second since it's the most common format.
+// Meow last since it has the simplest grammar.
 /* eslint-disable perfectionist/sort-objects */
 export default {
+	commander: helpStringToObjectCommander,
 	yargs: helpStringToObjectYargs,
 	meow: helpStringToObjectMeow,
-	commander: helpStringToObjectCommander,
 }
 /* eslint-enable perfectionist/sort-objects */
 

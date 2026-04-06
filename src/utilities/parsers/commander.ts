@@ -312,6 +312,11 @@ const visitor = new CliHelpToObjectVisitor()
  * command.
  */
 export function helpStringToObject(helpString: string): ProgramInfo {
+	// Commander help output always starts with "Usage:"
+	if (!helpString.trimStart().startsWith('Usage:')) {
+		throw new Error('Not a Commander-format help string (must start with "Usage:")')
+	}
+
 	// Lex
 	const lexingResult = lexer.tokenize(helpString)
 	if (lexingResult.errors.length > 0) {
@@ -345,10 +350,20 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	}
 
 	// Post-processing: filter out empty commands (e.g. from trailing whitespace in help output)
+	// and populate parentCommandName for recursive subcommand support.
+	// Commander's commands section omits the parent prefix (just "greet <name>" not
+	// "test-cli greet <name>"), so we infer it from the top-level command name.
 	if (programInfo.commands) {
 		programInfo.commands = programInfo.commands.filter(
 			(cmd) => cmd.commandName !== undefined || cmd.description !== undefined,
 		)
+
+		for (const cmd of programInfo.commands) {
+			if (cmd.commandName && !cmd.parentCommandName) {
+				cmd.parentCommandName = programInfo.commandName
+			}
+		}
+
 		if (programInfo.commands.length === 0) {
 			programInfo.commands = undefined
 		}
