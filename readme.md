@@ -26,7 +26,7 @@ This plugin automatically transforms a CLI command's `--help` output into nicely
 
 The rule also recursively calls `--help` on any subcommands found for inclusion in the output.
 
-Currently, the rule can only parse help output in the format provided by [Yargs](https://yargs.js.org)- and [Meow](https://github.com/sindresorhus/meow)-based tools. If parsing fails, the rule will fall back to show the raw help output in a regular code block instead.
+Currently, the rule can parse help output in the format provided by [Commander](https://github.com/tj/commander.js)-, [Yargs](https://yargs.js.org)-, and [Meow](https://github.com/sindresorhus/meow)-based tools. If parsing fails, the rule will fall back to show the raw help output in a regular code block instead.
 
 ## Getting started
 
