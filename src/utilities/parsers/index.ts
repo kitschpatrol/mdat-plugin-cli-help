@@ -1,3 +1,4 @@
+import { helpStringToObject as helpStringToObjectCommander } from './commander'
 import { helpStringToObject as helpStringToObjectMeow } from './meow'
 import { helpStringToObject as helpStringToObjectYargs } from './yargs'
 
@@ -42,6 +43,7 @@ export type ProgramInfo = {
 export default {
 	yargs: helpStringToObjectYargs,
 	meow: helpStringToObjectMeow,
+	commander: helpStringToObjectCommander,
 }
 /* eslint-enable perfectionist/sort-objects */
 

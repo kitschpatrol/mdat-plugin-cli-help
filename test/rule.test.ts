@@ -55,7 +55,15 @@ describe('cli help object to markdown', () => {
 })
 
 describe('cli help fall back on unparsable output', () => {
-	for (const [name, helpText] of Object.entries(helpSamplesUnsupported)) {
+	const unsupportedEntries = Object.entries(helpSamplesUnsupported)
+
+	if (unsupportedEntries.length === 0) {
+		it('no unsupported samples to test (all formats now supported)', () => {
+			expect(true).toBe(true)
+		})
+	}
+
+	for (const [name, helpText] of unsupportedEntries) {
 		it(`should fall back to the basic code block since "${name}" cannot yet be parsed`, () => {
 			// Attempt to parse typical Yargs help output
 			const programInfo = helpStringToObject(helpText)

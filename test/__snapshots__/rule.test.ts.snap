@@ -399,6 +399,42 @@ shared-config [<file|glob> ...]
 "
 `;
 
+exports[`cli help object to markdown > should convert a help object or "snip --help" to valid markdown 1`] = `
+"#### Command: \`snip\`
+
+A CLI tool for snippet management.
+
+This section lists top-level commands for \`snip\`.
+
+Usage:
+
+\`\`\`txt
+snip [options] [command]
+\`\`\`
+
+| Command | Argument | Description |
+| --- | --- | --- |
+| \`add\` | \`[filename]\` | add a snippet |
+| \`cd\` |  | launch a shell in the snippets directory |
+| \`list\` |  | list all snippets |
+| \`setup\` |  | set up snip |
+| \`sync-to-editors\` | \`[editors...]\` | sync snippets to editors |
+| \`sync-from-editors\` | \`[editors...]\` | sync snippets from editors (not yet implemented) |
+| \`help\` | \`[command]\` | display help for command |
+
+
+| Option | Argument | Description | Default |
+| --- | --- | --- | --- |
+| \`--version\`<br>\`-v\` |  | output the version number |  |
+| \`--config\`<br>\`-c\` | \`<path>\` | path to configuration file | \`/Users/mika/.config/snip/config.json\` |
+| \`--library\`<br>\`-l\` | \`<path>\` | path to library directory where snippets are stored | \`/Users/mika/.snip\` |
+| \`--debug\`<br>\`-d\` |  | extra logging for troubleshooting | \`false\` |
+| \`--help\`<br>\`-h\` |  | display help for command |  |
+
+
+_See the sections below for more information on each subcommand._"
+`;
+
 exports[`cli help object to markdown > should convert a help object or "tldraw-cli --help" to valid markdown 1`] = `
 "#### Command: \`tldraw-cli\`
 
@@ -1686,6 +1722,150 @@ exports[`cli help string to object > should convert "shared-config --help" to a 
       "description": "Print the package version.",
       "flags": [
         "--version",
+      ],
+    },
+  ],
+  "subcommandName": undefined,
+}
+`;
+
+exports[`cli help string to object > should convert "snip --help" to a valid program info object 1`] = `
+{
+  "arguments": [
+    "[options]",
+    "[command]",
+  ],
+  "commandName": "snip",
+  "commands": [
+    {
+      "aliases": undefined,
+      "arguments": [
+        "[filename]",
+      ],
+      "commandName": "add",
+      "defaultValue": undefined,
+      "description": "add a snippet",
+      "flags": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "commandName": "cd",
+      "defaultValue": undefined,
+      "description": "launch a shell in the snippets directory",
+      "flags": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "commandName": "list",
+      "defaultValue": undefined,
+      "description": "list all snippets",
+      "flags": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "commandName": "setup",
+      "defaultValue": undefined,
+      "description": "set up snip",
+      "flags": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": [
+        "[editors...]",
+      ],
+      "commandName": "sync-to-editors",
+      "defaultValue": undefined,
+      "description": "sync snippets to editors",
+      "flags": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": [
+        "[editors...]",
+      ],
+      "commandName": "sync-from-editors",
+      "defaultValue": undefined,
+      "description": "sync snippets from editors (not yet implemented)",
+      "flags": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": [
+        "[command]",
+      ],
+      "commandName": "help",
+      "defaultValue": undefined,
+      "description": "display help for command",
+      "flags": undefined,
+    },
+  ],
+  "description": "A CLI tool for snippet management.",
+  "options": [
+    {
+      "aliases": [
+        "-v",
+      ],
+      "arguments": undefined,
+      "commandName": undefined,
+      "defaultValue": undefined,
+      "description": "output the version number",
+      "flags": [
+        "--version",
+      ],
+    },
+    {
+      "aliases": [
+        "-c",
+      ],
+      "arguments": [
+        "<path>",
+      ],
+      "commandName": undefined,
+      "defaultValue": "/Users/mika/.config/snip/config.json",
+      "description": "path to configuration file",
+      "flags": [
+        "--config",
+      ],
+    },
+    {
+      "aliases": [
+        "-l",
+      ],
+      "arguments": [
+        "<path>",
+      ],
+      "commandName": undefined,
+      "defaultValue": "/Users/mika/.snip",
+      "description": "path to library directory where snippets are stored",
+      "flags": [
+        "--library",
+      ],
+    },
+    {
+      "aliases": [
+        "-d",
+      ],
+      "arguments": undefined,
+      "commandName": undefined,
+      "defaultValue": "false",
+      "description": "extra logging for troubleshooting",
+      "flags": [
+        "--debug",
+      ],
+    },
+    {
+      "aliases": [
+        "-h",
+      ],
+      "arguments": undefined,
+      "commandName": undefined,
+      "defaultValue": undefined,
+      "description": "display help for command",
+      "flags": [
+        "--help",
       ],
     },
   ],
