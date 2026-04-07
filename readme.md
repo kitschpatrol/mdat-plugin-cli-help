@@ -28,32 +28,6 @@ The rule also recursively calls `--help` on any subcommands found for inclusion 
 
 Currently, the rule can parse help output in the format provided by [Commander](https://github.com/tj/commander.js)-, [Yargs](https://yargs.js.org)-, and [Meow](https://github.com/sindresorhus/meow)-based tools. If parsing fails, the rule will fall back to show the raw help output in a regular code block instead.
 
-### Supported CLI frameworks
-
-#### [Yargs](https://yargs.js.org)
-
-Fully supported, including options, commands, positionals, choices, defaults, and type annotations.
-
-The parser handles line-wrapped output by unwrapping continuation lines before parsing. However, when Yargs wraps command _arguments_ onto new lines at very narrow terminal widths (e.g. below \~70 columns), those wrapped argument lines are indistinguishable from new command rows and cannot be reliably unwrapped. In practice, this is rare.
-
-For the most reliable parsing, configure your Yargs CLI to disable wrapping when stdout is not a TTY (i.e. when invoked programmatically by mdat):
-
-```ts
-yargs(process.argv).wrap(process.stdout.isTTY ? Math.min(120, yargs.terminalWidth()) : 0)
-```
-
-This outputs unwrapped help text when piped, while preserving normal wrapping for interactive use.
-
-#### [Commander](https://github.com/tj/commander.js)
-
-Fully supported, including options, commands, arguments (positionals), and parenthesized defaults with optional environment variable annotations (e.g. `(default: "value", env: MY_VAR)`).
-
-The parser handles line-wrapped output by unwrapping continuation lines before parsing. Commander's built-in `help` command is automatically filtered from subcommand recursion to avoid duplicate output.
-
-#### [Meow](https://github.com/sindresorhus/meow)
-
-Supported for options only. Meow does not have built-in support for commands or positionals, so only option flags, aliases, and descriptions are parsed.
-
 ## Getting started
 
 ### Dependencies
@@ -145,9 +119,39 @@ If you embed the rule without any arguments, it will look for the binary file li
 <!-- cli-help -->
 ```
 
+### Supported CLI frameworks
+
+#### [Yargs](https://yargs.js.org)
+
+Fully supported, including options, commands, positionals, choices, defaults, and type annotations.
+
+The parser handles line-wrapped output by unwrapping continuation lines before parsing. However, when Yargs wraps command _arguments_ onto new lines at very narrow terminal widths (e.g. below \~70 columns), those wrapped argument lines are indistinguishable from new command rows and cannot be reliably unwrapped. In practice, this is rare.
+
+For the most reliable parsing if you control the upstream project, configure your Yargs CLI to disable wrapping:
+
+```ts
+yargs(process.argv).wrap(process.stdout.isTTY ? Math.min(120, yargs.terminalWidth()) : 0)
+```
+
+This outputs unwrapped help text when piped, while preserving normal wrapping for interactive use.
+
+#### [Commander](https://github.com/tj/commander.js)
+
+Fully supported, including options, commands, arguments (positionals), and parenthesized defaults with optional environment variable annotations (e.g. `(default: "value", env: MY_VAR)`).
+
+The parser handles line-wrapped output by unwrapping continuation lines before parsing. Commander's built-in `help` command is automatically filtered from subcommand recursion to avoid duplicate output.
+
+#### [Meow](https://github.com/sindresorhus/meow)
+
+Should be fully supported or nearly so.
+
 ## Development notes
 
-Parsing arbitrary `--help` output is a bit tricky. The [jc](https://github.com/kellyjonbrazil/jc) project is a heroic collection of output parsers, but does not currently implement help output parsing. It might be interesting to try to contribute mdat's help parsing implementations to jc.
+Parsing arbitrary `--help` output is a bit tricky.
+
+You're right to think that an LLM could make quick work of this kind of "fuzzy text to structured data" transcription. However, when this tool was originally developed in 2024, testing a language model approach yielded sub-par results, so I pursued a traditional lexer/parser approach instead. There is also the logistical overhead of providing a smart-enough model both locally and in CI, where this tool frequently runs; it's technically feasible, but unpleasant. While the current hand-tuned parsers are admittedly a brittle tangle, future versions may revisit the LLM approach.
+
+In terms of prior art, the [jc](https://github.com/kellyjonbrazil/jc) project stands out as a heroic collection of CLI-tool output parsers, but does not currently implement help output parsing. It might be interesting to try to contribute mdat's help parsing implementations to jc.
 
 Currently, the parser implementation lives in this repository because I really only use it in the context of my CLI tool readme files. In theory, it really belongs in a separate package.
 

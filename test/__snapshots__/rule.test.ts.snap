@@ -44,7 +44,8 @@ mdat [command] [files..] [options]
 | --- | --- | --- |
 | \`expand\` | \`[files..]\` \`[options]\` | Expand MDAT placeholder comments. If no files are provided, the closest readme.md is expanded. _(Default command.)_ |
 | \`collapse\` | \`[files..]\` \`[options]\` | Collapse MDAT placeholder comments. If no files are provided, the closest readme.md is collapsed. |
-| \`check\` | \`[files..]\` \`[options]\` | Check if MDAT placeholder comments are up to date. Exits with code 1 if any files are out of sync. |
+| \`strip\` | \`[files..]\` \`[options]\` | Strip MDAT comments while preserving expanded content. If no files are provided, the closest readme.md is stripped. |
+| \`check\` | \`[files..]\` \`[options]\` | Check if MDAT placeholder comments are up to date. Exits with code 1 if any files have stale or unexpanded content. |
 | \`create\` | \`[options]\` | Create a new Markdown file from a template. |
 
 
@@ -103,9 +104,35 @@ mdat collapse [files..] [options]
 | \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
 
 
+#### Subcommand: \`mdat strip\`
+
+Strip MDAT comments while preserving expanded content. If no files are provided, the closest readme.md is stripped.
+
+Usage:
+
+\`\`\`txt
+mdat strip [files..] [options]
+\`\`\`
+
+| Positional Argument | Description | Type |
+| --- | --- | --- |
+| \`files\` | Markdown file(s) with MDAT placeholder comments. If not provided, the closest readme.md file is used. | \`string\` |
+
+
+| Option | Description | Type | Default |
+| --- | --- | --- | --- |
+| \`--verbose\` | Enable verbose logging. All verbose logs are prefixed with their log level and are printed to stderr for ease of redirection. | \`boolean\` |  |
+| \`--output\`<br>\`-o\` | Output file directory. | \`string\` | Same directory as input file. |
+| \`--name\`<br>\`-n\` | Output file name. | \`string\` | Same name as input file. Overwrites the input file. |
+| \`--print\` | Print the expanded Markdown to stdout instead of saving to a file. Ignores \`--output\` and \`--name\` options. | \`boolean\` |  |
+| \`--format\`<br>\`-f\` | Format the output with Prettier. Discovers Prettier config from the file path. Requires \`prettier\` as a peer dependency. | \`boolean\` |  |
+| \`--help\`<br>\`-h\` | Show help | \`boolean\` |  |
+| \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
+
+
 #### Subcommand: \`mdat check\`
 
-Check if MDAT placeholder comments are up to date. Exits with code 1 if any files are out of sync.
+Check if MDAT placeholder comments are up to date. Exits with code 1 if any files have stale or unexpanded content.
 
 Usage:
 
