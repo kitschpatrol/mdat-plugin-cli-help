@@ -17,7 +17,6 @@ test-cli [options] [command]
 | --- | --- | --- |
 | \`greet\` | \`<name>\` | Greet someone by name |
 | \`serve\` | \`[port]\` | Start a server |
-| \`help\` | \`[command]\` | display help for command |
 
 
 | Option | Argument | Description | Default |
@@ -58,31 +57,6 @@ test-cli serve [options] [port]
 | Option | Description |
 | --- | --- |
 | \`--help\`<br>\`-h\` | display help for command |
-
-
-#### Command: \`test-cli\`
-
-A test CLI for normalization verification.
-
-Usage:
-
-\`\`\`txt
-test-cli [options] [command]
-\`\`\`
-
-| Command | Argument | Description |
-| --- | --- | --- |
-| \`greet\` | \`<name>\` | Greet someone by name |
-| \`serve\` | \`[port]\` | Start a server |
-| \`help\` | \`[command]\` | display help for command |
-
-
-| Option | Argument | Description | Default |
-| --- | --- | --- | --- |
-| \`--version\`<br>\`-V\` |  | output the version number |  |
-| \`--name\`<br>\`-n\` | \`<value>\` | Name to greet | \`world\` |
-| \`--verbose\` |  | Enable verbose output |  |
-| \`--help\`<br>\`-h\` |  | display help for command |  |
 "
 `;
 
@@ -113,17 +87,6 @@ exports[`cross-framework normalization > should parse commander fixture help out
       "commandName": "serve",
       "defaultValue": undefined,
       "description": "Start a server",
-      "flags": undefined,
-      "parentCommandName": "test-cli",
-    },
-    {
-      "aliases": undefined,
-      "arguments": [
-        "[command]",
-      ],
-      "commandName": "help",
-      "defaultValue": undefined,
-      "description": "display help for command",
       "flags": undefined,
       "parentCommandName": "test-cli",
     },
@@ -179,6 +142,7 @@ exports[`cross-framework normalization > should parse commander fixture help out
       ],
     },
   ],
+  "positionals": undefined,
   "subcommandName": undefined,
 }
 `;
