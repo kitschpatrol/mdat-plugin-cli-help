@@ -11,7 +11,7 @@
 /* eslint-disable ts/naming-convention */
 
 import { createToken, CstParser, Lexer } from 'chevrotain'
-import type { Command, Option, ProgramInfo } from './index'
+import type { Command, Option, Positional, ProgramInfo } from './index'
 import { getCommandParts } from './index'
 
 // Lexer ----------------------------------------------------------------------
@@ -65,6 +65,12 @@ const endProgramDescription = createToken({
 	pop_mode: true,
 })
 
+const startArgumentsSection = createToken({
+	name: 'startArgumentsSection',
+	pattern: /Arguments:\n/,
+	push_mode: 'SECTION_MODE',
+})
+
 const startOptionsSection = createToken({
 	name: 'startOptionsSection',
 	pattern: /Options:\n/,
@@ -114,6 +120,7 @@ const lexer = new Lexer({
 	defaultMode: 'DEFAULT_MODE',
 	modes: {
 		DEFAULT_MODE: [
+			startArgumentsSection,
 			startOptionsSection,
 			startCommandsSection,
 			usagePrefix,
@@ -151,6 +158,7 @@ const allTokens = [
 	startProgramDescription,
 	programDescription,
 	endProgramDescription,
+	startArgumentsSection,
 	startOptionsSection,
 	startCommandsSection,
 	startRow,
@@ -180,6 +188,13 @@ class CliParser extends CstParser {
 		})
 	})
 
+	private readonly argumentsSection = this.RULE('argumentsSection', () => {
+		this.CONSUME(startArgumentsSection)
+		this.MANY3(() => {
+			this.SUBRULE3(this.sectionRow)
+		})
+	})
+
 	private readonly commandsSection = this.RULE('commandsSection', () => {
 		this.CONSUME(startCommandsSection)
 		this.MANY1(() => {
@@ -205,9 +220,12 @@ class CliParser extends CstParser {
 			this.CONSUME(programDescription, { LABEL: 'description' })
 		})
 		this.OPTION1(() => {
-			this.SUBRULE(this.optionsSection)
+			this.SUBRULE(this.argumentsSection)
 		})
 		this.OPTION2(() => {
+			this.SUBRULE(this.optionsSection)
+		})
+		this.OPTION3(() => {
 			this.SUBRULE(this.commandsSection)
 		})
 	})
@@ -226,6 +244,18 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	constructor() {
 		super()
 		this.validateVisitor()
+	}
+
+	argumentsSection(context: any): Positional[] {
+		return context.sectionRow.map((entry: any) => {
+			const row = this.visit(entry)
+			// Commander's Arguments: rows use word (commandName label) for the arg name
+			return {
+				arguments: row.commandName ? [row.commandName] : undefined,
+				defaultValue: row.defaultValue,
+				description: row.description,
+			}
+		})
 	}
 
 	commandsSection(context: any): Command[] {
@@ -248,6 +278,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 			commands: context.commandsSection ? this.visit(context.commandsSection) : undefined,
 			description: this.getString(context.description),
 			options: context.optionsSection ? this.visit(context.optionsSection) : undefined,
+			positionals: context.argumentsSection ? this.visit(context.argumentsSection) : undefined,
 			subcommandName,
 		}
 	}
@@ -317,8 +348,13 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 		throw new Error('Not a Commander-format help string (must start with "Usage:")')
 	}
 
+	// Pre-process: unwrap continuation lines before lexing.
+	// Commander wraps long descriptions/defaults across multiple lines, indenting
+	// continuation lines to align with the description column (4+ spaces).
+	const unwrapped = unwrapContinuationLines(helpString)
+
 	// Lex
-	const lexingResult = lexer.tokenize(helpString)
+	const lexingResult = lexer.tokenize(unwrapped)
 	if (lexingResult.errors.length > 0) {
 		throw new Error(
 			`Errors lexing CLI command: ${JSON.stringify(lexingResult.errors, undefined, 2)}`,
@@ -358,6 +394,10 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 			(cmd) => cmd.commandName !== undefined || cmd.description !== undefined,
 		)
 
+		// Filter out Commander's built-in "help" command — recursing into it
+		// re-outputs the top-level help, causing duplicate content.
+		programInfo.commands = programInfo.commands.filter((cmd) => cmd.commandName !== 'help')
+
 		for (const cmd of programInfo.commands) {
 			if (cmd.commandName && !cmd.parentCommandName) {
 				cmd.parentCommandName = programInfo.commandName
@@ -370,4 +410,39 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	}
 
 	return programInfo
+}
+
+/**
+ * Join continuation lines in Commander help output before lexing.
+ *
+ * Commander wraps long descriptions and default values across multiple lines,
+ * indenting continuation lines to align with the description start column
+ * (typically 30+ spaces). The lexer's ROW_MODE exits on newline, so we must
+ * unwrap these before tokenizing.
+ *
+ * Detection: a continuation line has 4+ leading spaces and does NOT start a
+ * new row (which would be exactly 2 spaces + a non-space character).
+ */
+const continuationLinePattern = /^ {4,}/
+const newRowPattern = /^ {2}\S/
+
+function unwrapContinuationLines(helpString: string): string {
+	const lines = helpString.split('\n')
+	const result: string[] = []
+
+	for (const line of lines) {
+		if (
+			result.length > 0 &&
+			line.length > 0 &&
+			continuationLinePattern.test(line) &&
+			!newRowPattern.test(line)
+		) {
+			// Append continuation text to the previous line
+			result[result.length - 1] += ' ' + line.trim()
+		} else {
+			result.push(line)
+		}
+	}
+
+	return result.join('\n')
 }

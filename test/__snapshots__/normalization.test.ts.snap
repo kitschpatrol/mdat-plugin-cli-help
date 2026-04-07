@@ -17,7 +17,6 @@ test-cli [options] [command]
 | --- | --- | --- |
 | \`greet\` | \`<name>\` | Greet someone by name |
 | \`serve\` | \`[port]\` | Start a server |
-| \`help\` | \`[command]\` | display help for command |
 
 
 | Option | Argument | Description | Default |
@@ -58,31 +57,6 @@ test-cli serve [options] [port]
 | Option | Description |
 | --- | --- |
 | \`--help\`<br>\`-h\` | display help for command |
-
-
-#### Command: \`test-cli\`
-
-A test CLI for normalization verification.
-
-Usage:
-
-\`\`\`txt
-test-cli [options] [command]
-\`\`\`
-
-| Command | Argument | Description |
-| --- | --- | --- |
-| \`greet\` | \`<name>\` | Greet someone by name |
-| \`serve\` | \`[port]\` | Start a server |
-| \`help\` | \`[command]\` | display help for command |
-
-
-| Option | Argument | Description | Default |
-| --- | --- | --- | --- |
-| \`--version\`<br>\`-V\` |  | output the version number |  |
-| \`--name\`<br>\`-n\` | \`<value>\` | Name to greet | \`world\` |
-| \`--verbose\` |  | Enable verbose output |  |
-| \`--help\`<br>\`-h\` |  | display help for command |  |
 "
 `;
 
@@ -113,17 +87,6 @@ exports[`cross-framework normalization > should parse commander fixture help out
       "commandName": "serve",
       "defaultValue": undefined,
       "description": "Start a server",
-      "flags": undefined,
-      "parentCommandName": "test-cli",
-    },
-    {
-      "aliases": undefined,
-      "arguments": [
-        "[command]",
-      ],
-      "commandName": "help",
-      "defaultValue": undefined,
-      "description": "display help for command",
       "flags": undefined,
       "parentCommandName": "test-cli",
     },
@@ -179,6 +142,7 @@ exports[`cross-framework normalization > should parse commander fixture help out
       ],
     },
   ],
+  "positionals": undefined,
   "subcommandName": undefined,
 }
 `;
@@ -334,6 +298,252 @@ exports[`cross-framework normalization > should parse yargs fixture help output 
       "description": "Show help",
       "flags": [
         "--help",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": "boolean",
+    },
+  ],
+  "positionals": undefined,
+  "subcommandName": undefined,
+}
+`;
+
+exports[`yargs wrapped output > should parse heavily wrapped yargs help output 1`] = `
+{
+  "arguments": [
+    "<files..>",
+    "[options]",
+  ],
+  "commandName": "wrapped-cli",
+  "commands": [
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": "deploy",
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Deploy the application",
+      "flags": undefined,
+      "parentCommandName": "wrapped-cli",
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": "migrate",
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Run database migrations",
+      "flags": undefined,
+      "parentCommandName": "wrapped-cli",
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": "generate",
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Generate boilerplate code",
+      "flags": undefined,
+      "parentCommandName": "wrapped-cli",
+      "required": undefined,
+      "type": undefined,
+    },
+  ],
+  "description": "A complex CLI that demonstrates wrapping behavior.",
+  "options": [
+    {
+      "aliases": [
+        "-c",
+      ],
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Path to the configuration file that controls deployment settings and environment variables [string] [default: "./config/default.yml"",
+      "flags": [
+        "--config",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": [
+        "-o",
+      ],
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Output directory for generated files and build artifacts [string] [default: "./dist"",
+      "flags": [
+        "--output",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Set the logging verbosity level for console and file output [string] [choices: "debug", "info", "warn", "error"] [default: "info"",
+      "flags": [
+        "--log-level",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Maximum number of retry attempts for failed network requests before giving up [number] [default: 3",
+      "flags": [
+        "--max-retries",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Preview changes without actually executing them, useful for verifying deployment plans [boolean",
+      "flags": [
+        "--dry-run",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": [
+        "-p",
+      ],
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": "4",
+      "description": "Number of parallel workers to use for concurrent task execution",
+      "flags": [
+        "--parallel",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": "number",
+    },
+    {
+      "aliases": [
+        "-t",
+      ],
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Request timeout in milliseconds for all outgoing HTTP connections [number] [default: 30000",
+      "flags": [
+        "--timeout",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": [
+        "-f",
+      ],
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Output format for generated configuration files and exported data [string] [choices: "json", "yaml", "toml", "xml"] [default: "json"",
+      "flags": [
+        "--format",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Include deprecated API endpoints and legacy compatibility shims in the output [boolean] [default: false",
+      "flags": [
+        "--include-deprecated",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Directory for storing temporary build cache and intermediate compilation artifacts [string] [default: ".cache"",
+      "flags": [
+        "--cache-dir",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": undefined,
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Show help",
+      "flags": [
+        "--help",
+      ],
+      "parentCommandName": undefined,
+      "required": undefined,
+      "type": "boolean",
+    },
+    {
+      "aliases": undefined,
+      "arguments": undefined,
+      "choices": undefined,
+      "commandName": undefined,
+      "default": undefined,
+      "defaultValue": undefined,
+      "description": "Show version number",
+      "flags": [
+        "--version",
       ],
       "parentCommandName": undefined,
       "required": undefined,

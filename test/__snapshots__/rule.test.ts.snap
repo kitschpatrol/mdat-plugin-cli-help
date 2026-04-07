@@ -44,8 +44,7 @@ mdat [command] [files..] [options]
 | --- | --- | --- |
 | \`expand\` | \`[files..]\` \`[options]\` | Expand MDAT placeholder comments. If no files are provided, the closest readme.md is expanded. _(Default command.)_ |
 | \`collapse\` | \`[files..]\` \`[options]\` | Collapse MDAT placeholder comments. If no files are provided, the closest readme.md is collapsed. |
-| \`strip\` | \`[files..]\` \`[options]\` | Strip MDAT comments while preserving expanded content. If no files are provided, the closest readme.md is stripped. |
-| \`check\` | \`[files..]\` \`[options]\` | Check if MDAT placeholder comments are up to date. Exits with code 1 if any files have stale or unexpanded content. |
+| \`check\` | \`[files..]\` \`[options]\` | Check if MDAT placeholder comments are up to date. Exits with code 1 if any files are out of sync. |
 | \`create\` | \`[options]\` | Create a new Markdown file from a template. |
 
 
@@ -104,35 +103,9 @@ mdat collapse [files..] [options]
 | \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
 
 
-#### Subcommand: \`mdat strip\`
-
-Strip MDAT comments while preserving expanded content. If no files are provided, the closest readme.md is stripped.
-
-Usage:
-
-\`\`\`txt
-mdat strip [files..] [options]
-\`\`\`
-
-| Positional Argument | Description | Type |
-| --- | --- | --- |
-| \`files\` | Markdown file(s) with MDAT placeholder comments. If not provided, the closest readme.md file is used. | \`string\` |
-
-
-| Option | Description | Type | Default |
-| --- | --- | --- | --- |
-| \`--verbose\` | Enable verbose logging. All verbose logs are prefixed with their log level and are printed to stderr for ease of redirection. | \`boolean\` |  |
-| \`--output\`<br>\`-o\` | Output file directory. | \`string\` | Same directory as input file. |
-| \`--name\`<br>\`-n\` | Output file name. | \`string\` | Same name as input file. Overwrites the input file. |
-| \`--print\` | Print the expanded Markdown to stdout instead of saving to a file. Ignores \`--output\` and \`--name\` options. | \`boolean\` |  |
-| \`--format\`<br>\`-f\` | Format the output with Prettier. Discovers Prettier config from the file path. Requires \`prettier\` as a peer dependency. | \`boolean\` |  |
-| \`--help\`<br>\`-h\` | Show help | \`boolean\` |  |
-| \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
-
-
 #### Subcommand: \`mdat check\`
 
-Check if MDAT placeholder comments are up to date. Exits with code 1 if any files have stale or unexpanded content.
+Check if MDAT placeholder comments are up to date. Exits with code 1 if any files are out of sync.
 
 Usage:
 
@@ -447,14 +420,13 @@ snip [options] [command]
 | \`setup\` |  | set up snip |
 | \`sync-to-editors\` | \`[editors...]\` | sync snippets to editors |
 | \`sync-from-editors\` | \`[editors...]\` | sync snippets from editors (not yet implemented) |
-| \`help\` | \`[command]\` | display help for command |
 
 
 | Option | Argument | Description | Default |
 | --- | --- | --- | --- |
 | \`--version\`<br>\`-v\` |  | output the version number |  |
-| \`--config\`<br>\`-c\` | \`<path>\` | path to configuration file | \`/Users/mika/.config/snip/config.json\` |
-| \`--library\`<br>\`-l\` | \`<path>\` | path to library directory where snippets are stored | \`/Users/mika/.snip\` |
+| \`--config\`<br>\`-c\` | \`<path>\` | path to configuration file | \`~/.config/snip/config.json\` |
+| \`--library\`<br>\`-l\` | \`<path>\` | path to library directory where snippets are stored | \`~/.snip\` |
 | \`--debug\`<br>\`-d\` |  | extra logging for troubleshooting | \`false\` |
 | \`--help\`<br>\`-h\` |  | display help for command |  |
 
@@ -1824,17 +1796,6 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       "flags": undefined,
       "parentCommandName": "snip",
     },
-    {
-      "aliases": undefined,
-      "arguments": [
-        "[command]",
-      ],
-      "commandName": "help",
-      "defaultValue": undefined,
-      "description": "display help for command",
-      "flags": undefined,
-      "parentCommandName": "snip",
-    },
   ],
   "description": "A CLI tool for snippet management.",
   "options": [
@@ -1858,7 +1819,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
         "<path>",
       ],
       "commandName": undefined,
-      "defaultValue": "/Users/mika/.config/snip/config.json",
+      "defaultValue": "~/.config/snip/config.json",
       "description": "path to configuration file",
       "flags": [
         "--config",
@@ -1872,7 +1833,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
         "<path>",
       ],
       "commandName": undefined,
-      "defaultValue": "/Users/mika/.snip",
+      "defaultValue": "~/.snip",
       "description": "path to library directory where snippets are stored",
       "flags": [
         "--library",
@@ -1903,6 +1864,7 @@ exports[`cli help string to object > should convert "snip --help" to a valid pro
       ],
     },
   ],
+  "positionals": undefined,
   "subcommandName": undefined,
 }
 `;
