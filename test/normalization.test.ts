@@ -159,6 +159,66 @@ describe('cross-framework normalization', { timeout: 30_000 }, () => {
 	})
 })
 
+describe('yargs wrapped output', { timeout: 30_000 }, () => {
+	it('should parse heavily wrapped yargs help output', async () => {
+		// Use the wrapped CLI fixture which sets .wrap(60) to force narrow wrapping
+		// eslint-disable-next-line ts/naming-convention
+		const narrowEnv = { ...process.env, COLUMNS: '60' }
+		const { stderr, stdout } = await execa(
+			'node',
+			[`${fixturesDirectory}/yargs-wrapped-cli.js`, '--help'],
+			{ env: narrowEnv },
+		)
+
+		const raw = stdout || stderr
+
+		// Verify the output is actually wrapped (contains continuation lines)
+		expect(raw).toContain('\n                            ')
+
+		const parsed = helpStringToObject(raw)
+		expect(parsed).toBeDefined()
+		expect(parsed!.commandName).toBe('wrapped-cli')
+		expect(parsed!.description).toContain('A complex CLI that demonstrates wrapping behavior')
+
+		// Verify commands are parsed (they fit on one line at .wrap(60))
+		expect(parsed!.commands).toBeDefined()
+		const deploy = parsed!.commands?.find((c) => c.commandName === 'deploy')
+		const migrate = parsed!.commands?.find((c) => c.commandName === 'migrate')
+		const generate = parsed!.commands?.find((c) => c.commandName === 'generate')
+		expect(deploy).toBeDefined()
+		expect(deploy!.description).toContain('Deploy the application')
+		expect(migrate).toBeDefined()
+		expect(migrate!.description).toContain('Run database migrations')
+		expect(generate).toBeDefined()
+		expect(generate!.description).toContain('Generate boilerplate code')
+
+		// Verify options with wrapped descriptions + metadata are parsed correctly
+		expect(parsed!.options).toBeDefined()
+
+		// --config: description wraps across 4 lines, then [string] [default:] on another
+		const config = parsed!.options?.find((o) => o.flags?.includes('--config'))
+		expect(config).toBeDefined()
+		expect(config!.description).toContain('Path to the configuration file')
+		expect(config!.aliases).toContain('-c')
+
+		// --log-level: description wraps, then [choices:] and [default:] on separate lines
+		const logLevel = parsed!.options?.find((o) => o.flags?.includes('--log-level'))
+		expect(logLevel).toBeDefined()
+		expect(logLevel!.description).toContain('Set the logging verbosity level')
+
+		// --dry-run: description wraps, then just [boolean] on its own line
+		const dryRun = parsed!.options?.find((o) => o.flags?.includes('--dry-run'))
+		expect(dryRun).toBeDefined()
+		expect(dryRun!.description).toContain('Preview changes without actually executing')
+
+		// --format: description wraps, [choices:] and [default:] on separate lines
+		const format = parsed!.options?.find((o) => o.flags?.includes('--format'))
+		expect(format).toBeDefined()
+
+		expect(parsed).toMatchSnapshot()
+	})
+})
+
 describe('commander recursive subcommand help', { timeout: 30_000 }, () => {
 	it('should recursively resolve commander subcommand help output', async () => {
 		const helpMarkdown = await getHelpMarkdown(`${fixturesDirectory}/commander-cli.js`, '--help', 2)

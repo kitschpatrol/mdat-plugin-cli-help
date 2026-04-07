@@ -367,8 +367,13 @@ const visitor = new CliHelpToObjectVisitor()
  * command.
  */
 export function helpStringToObject(helpString: string): ProgramInfo {
+	// Pre-process: unwrap continuation lines before lexing.
+	// Yargs wraps long descriptions across multiple lines when terminal width is
+	// narrow, indenting continuation lines to align with the description column.
+	const unwrapped = unwrapContinuationLines(helpString)
+
 	// Lex
-	const lexingResult = lexer.tokenize(helpString)
+	const lexingResult = lexer.tokenize(unwrapped)
 	if (lexingResult.errors.length > 0) {
 		throw new Error(
 			`Errors lexing CLI command: ${JSON.stringify(lexingResult.errors, undefined, 2)}`,
@@ -400,4 +405,50 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	}
 
 	return programInfo
+}
+
+/**
+ * Join continuation lines in Yargs help output before lexing.
+ *
+ * When terminal width is narrow, Yargs wraps long descriptions across multiple
+ * lines, indenting continuations to align with the description start column.
+ * The lexer's ROW_MODE exits on newline, so we must unwrap these first.
+ *
+ * Detection: a continuation line has 4+ leading spaces and its first non-space
+ * character is NOT `-` (which would indicate a new option/alias row). Yargs
+ * uses variable indentation for option rows (2 spaces for aliased options like
+ * `-r, --rules`, 6 spaces for long-only options like `--config`), so we cannot
+ * rely on indent depth alone to distinguish new rows from continuations.
+ */
+const deepIndentPattern = /^ {4,}/
+const newOptionRowPattern = /^ *-/
+const sectionHeaderPattern = /^(?:Options|Commands|Positionals):?\s*$/
+function unwrapContinuationLines(helpString: string): string {
+	const lines = helpString.split('\n')
+	const result: string[] = []
+	let inSection = false
+
+	for (const line of lines) {
+		if (sectionHeaderPattern.test(line)) {
+			inSection = true
+			result.push(line)
+		} else if (line.trim() === '') {
+			// Blank lines end sections
+			inSection = false
+			result.push(line)
+		} else if (
+			inSection &&
+			result.length > 0 &&
+			line.length > 0 &&
+			deepIndentPattern.test(line) &&
+			!newOptionRowPattern.test(line)
+		) {
+			// Append continuation text to the previous line
+			result[result.length - 1] += ' ' + line.trim()
+		} else {
+			result.push(line)
+		}
+	}
+
+	return result.join('\n')
 }
