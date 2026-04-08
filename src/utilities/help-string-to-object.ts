@@ -26,6 +26,6 @@ export function helpStringToObject(helpString: string): ProgramInfo | undefined 
 		}
 	}
 
-	log.warn('Could not parse help string with any parser')
+	log.debug('Could not parse help string with any parser')
 	return undefined
 }

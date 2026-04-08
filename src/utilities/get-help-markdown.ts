@@ -33,7 +33,7 @@ async function getHelpMarkdownInternal(
 
 	// Fall back to basic code fence output if parsing fails
 	if (programInfo === undefined) {
-		log.warn(`Falling back to basic cli help text output.`)
+		log.debug(`Falling back to basic cli help text output.`)
 		return renderHelpMarkdownBasic(rawHelpString)
 	}
 
