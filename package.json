@@ -1,6 +1,6 @@
 {
 	"name": "mdat-plugin-cli-help",
-	"version": "2.1.2",
+	"version": "3.0.0",
 	"description": "Mdat plugin to generate tabular help documentation for CLI tools in Markdown files.",
 	"keywords": [
 		"markdown",
