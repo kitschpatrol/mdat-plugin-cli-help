@@ -12,11 +12,18 @@ const cliHelpRule = defineConfig({
 					cliCommand: z.string().optional(),
 					depth: z.number().optional(),
 					helpFlag: z.string().optional(),
+					subcommand: z.string().optional(),
 				})
 				.optional()
 				.parse(options)
 			const resolvedCommand = await inferCommand(validOptions?.cliCommand)
-			return getHelpMarkdown(resolvedCommand, validOptions?.helpFlag, validOptions?.depth)
+			const subcommands = validOptions?.subcommand?.split(/\s+/).filter(Boolean) ?? []
+			return getHelpMarkdown(
+				resolvedCommand,
+				validOptions?.helpFlag,
+				validOptions?.depth,
+				subcommands,
+			)
 		},
 	},
 })

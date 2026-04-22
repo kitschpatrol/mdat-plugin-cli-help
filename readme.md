@@ -105,6 +105,14 @@ mdat [command]
 <!-- /cli-help -->
 ````
 
+To generate help for a specific subcommand, pass `subcommand`. Whitespace-separated for nested paths:
+
+```markdown
+<!-- cli-help({ cliCommand: "mdat", subcommand: "readme", depth: 1 }) -->
+```
+
+This invokes `mdat readme --help`. Discovered sub-subcommands are appended to this path during recursion.
+
 The command is also aliased under the `<!-- cli -->` keyword.
 
 This would have equivalent output to the above:

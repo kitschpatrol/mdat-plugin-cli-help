@@ -10,13 +10,22 @@ import { log } from './log'
  * @param cliCommand - The executable path (may contain spaces, e.g. on Windows)
  * @param helpFlag - The flag to pass to get help output
  * @param depth - Max recursion depth for subcommands
+ * @param subcommands - Initial subcommand path to invoke before the help flag
+ *   (e.g. `['remote', 'add']` produces `cliCommand remote add --help`).
+ *   Discovered subcommands are appended to this path during recursion.
  */
 export async function getHelpMarkdown(
 	cliCommand: string,
 	helpFlag = '--help',
 	depth?: number,
+	subcommands: string[] = [],
 ): Promise<string> {
-	return getHelpMarkdownInternal(cliCommand, [], helpFlag, depth ?? Number.MAX_SAFE_INTEGER)
+	return getHelpMarkdownInternal(
+		cliCommand,
+		subcommands,
+		helpFlag,
+		depth ?? Number.MAX_SAFE_INTEGER,
+	)
 }
 
 async function getHelpMarkdownInternal(
