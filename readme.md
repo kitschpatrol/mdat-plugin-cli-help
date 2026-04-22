@@ -58,13 +58,13 @@ export default defineConfig({
 Assuming you have an executable with a `--help` flag on your path or in your project's scope:
 
 ```markdown
-<!-- cli-help({ cliCommand: "mdat", depth: 1 }) -->
+<!-- cli-help({ command: "mdat", depth: 1 }) -->
 ```
 
 Then run the `mdat` CLI command on your Markdown file to expand the rule and embed the tabular help output:
 
 ````markdown
-<!-- cli-help({ cliCommand: "mdat", depth: 1 }) -->
+<!-- cli-help({ command: "mdat", depth: 1 }) -->
 
 #### Command: `mdat`
 
@@ -108,7 +108,7 @@ mdat [command]
 To generate help for a specific subcommand, pass `subcommand`. Whitespace-separated for nested paths:
 
 ```markdown
-<!-- cli-help({ cliCommand: "mdat", subcommand: "readme", depth: 1 }) -->
+<!-- cli-help({ command: "mdat", subcommand: "readme", depth: 1 }) -->
 ```
 
 This invokes `mdat readme --help`. Discovered sub-subcommands are appended to this path during recursion.
@@ -118,7 +118,7 @@ The command is also aliased under the `<!-- cli -->` keyword.
 This would have equivalent output to the above:
 
 ```markdown
-<!-- cli({ cliCommand: "mdat", depth: 1 }) -->
+<!-- cli({ command: "mdat", depth: 1 }) -->
 ```
 
 If you embed the rule without any arguments, it will look for the binary file listed in the closest `package.json` file and run it with `--help`. This is what you want if you're documenting a package's CLI options in its readme.md file:

@@ -105,7 +105,7 @@ describe('cli help invocation', { timeout: 60_000 }, () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
 		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
-		const helpMarkdown = await cliHelpRule.content({ cliCommand: 'git' })
+		const helpMarkdown = await cliHelpRule.content({ command: 'git' })
 		expect(helpMarkdown).toContain('```')
 		expect(helpMarkdown).toContain('usage: git')
 	})
@@ -114,14 +114,14 @@ describe('cli help invocation', { timeout: 60_000 }, () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
 		// eslint-disable-next-line ts/no-unsafe-call
-		await expect(cliHelpRule.content({ cliCommand: '/dev/null' })).rejects.toThrow()
+		await expect(cliHelpRule.content({ command: '/dev/null' })).rejects.toThrow()
 	})
 
 	it('should correctly resolve binary names that are in package.json but not on the path', async () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
 		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
-		const helpMarkdown = await cliHelpRule.content({ cliCommand: 'mdat' })
+		const helpMarkdown = await cliHelpRule.content({ command: 'mdat' })
 		expect(helpMarkdown).toMatchSnapshot()
 	})
 })

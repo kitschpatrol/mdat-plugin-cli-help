@@ -4,20 +4,23 @@ import { getHelpMarkdown } from './utilities/get-help-markdown'
 import { inferCommand } from './utilities/infer-command'
 export { setLogger } from './utilities/log'
 
+const WHITESPACE_REGEX = /\s+/
+
 const cliHelpRule = defineConfig({
 	cli: {
 		async content(options?, _context?) {
 			const validOptions = z
 				.object({
-					cliCommand: z.string().optional(),
+					command: z.string().optional(),
 					depth: z.number().optional(),
 					helpFlag: z.string().optional(),
 					subcommand: z.string().optional(),
 				})
+				.strict()
 				.optional()
 				.parse(options)
-			const resolvedCommand = await inferCommand(validOptions?.cliCommand)
-			const subcommands = validOptions?.subcommand?.split(/\s+/).filter(Boolean) ?? []
+			const resolvedCommand = await inferCommand(validOptions?.command)
+			const subcommands = validOptions?.subcommand?.split(WHITESPACE_REGEX).filter(Boolean) ?? []
 			return getHelpMarkdown(
 				resolvedCommand,
 				validOptions?.helpFlag,

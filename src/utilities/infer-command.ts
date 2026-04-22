@@ -6,13 +6,13 @@ import { log } from './log'
 
 /**
  * Accommodate missing or sloppy cli help command input
- * @param cliCommand - Can be nothing, a command name on the path like `git`, or a path to an executable like `./bin/cli.js`
+ * @param command - Can be nothing, a command name on the path like `git`, or a path to an executable like `./bin/cli.js`
  * @returns The path to a verified executable
  * @throws {Error} If nothing can be inferred or resolved
  */
-export async function inferCommand(cliCommand: string | undefined): Promise<string> {
-	cliCommand ??= await getFirstBinFromPackage()
-	return ensureExecutable(cliCommand)
+export async function inferCommand(command: string | undefined): Promise<string> {
+	command ??= await getFirstBinFromPackage()
+	return ensureExecutable(command)
 }
 
 function firstOf<T>(value: T | T[] | undefined): T | undefined {
@@ -44,7 +44,7 @@ async function getFirstBinFromPackage(): Promise<string> {
 	}
 
 	throw new Error(
-		`Could not infer which command to run for the <!-- cli-help --> rule. Please pass a "cliCommand" option to the expansion comment, e.g. <!-- cli-help({cliCommand: './dist/bin.js'}) -->`,
+		`Could not infer which command to run for the <!-- cli-help --> rule. Please pass a "command" option to the expansion comment, e.g. <!-- cli-help({command: './dist/bin.js'}) -->`,
 	)
 }
 
