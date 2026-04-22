@@ -58,7 +58,9 @@ async function renderHelpMarkdownObject(
 	// Check for subcommands
 	if (programInfo.commands) {
 		for (const command of programInfo.commands) {
-			if (!command.parentCommandName || !command.commandName) continue
+			if (!command.parentCommandName || !command.commandName) {
+				continue
+			}
 			const subCommandHelp = await getHelpMarkdownInternal(
 				executable,
 				[...subcommands, command.commandName],
@@ -66,7 +68,9 @@ async function renderHelpMarkdownObject(
 				depth - 1,
 			)
 			// Recursion limit returns empty string
-			if (subCommandHelp === '') return markdown
+			if (subCommandHelp === '') {
+				return markdown
+			}
 
 			markdown += `\n\n${subCommandHelp}`
 		}

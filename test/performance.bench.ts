@@ -273,50 +273,68 @@ describe('full pipeline: real-world fixtures', () => {
 describe('full pipeline: synthetic yargs (scaling)', () => {
 	bench('parse + markdown [yargs] — 10 opts, 3 cmds', () => {
 		const object = helpStringToObject(syntheticSmall)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 
 	bench('parse + markdown [yargs] — 50 opts, 10 cmds', () => {
 		const object = helpStringToObject(syntheticMedium)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 
 	bench('parse + markdown [yargs] — 200 opts, 30 cmds', () => {
 		const object = helpStringToObject(syntheticLarge)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 })
 
 describe('full pipeline: synthetic commander (scaling)', () => {
 	bench('parse + markdown [commander] — 10 opts, 3 cmds', () => {
 		const object = helpStringToObject(commanderSmall)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 
 	bench('parse + markdown [commander] — 50 opts, 10 cmds', () => {
 		const object = helpStringToObject(commanderMedium)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 
 	bench('parse + markdown [commander] — 200 opts, 30 cmds', () => {
 		const object = helpStringToObject(commanderLarge)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 })
 
 describe('full pipeline: synthetic meow (scaling)', () => {
 	bench('parse + markdown [meow] — 10 opts', () => {
 		const object = helpStringToObject(meowSmall)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 
 	bench('parse + markdown [meow] — 50 opts', () => {
 		const object = helpStringToObject(meowMedium)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 
 	bench('parse + markdown [meow] — 200 opts', () => {
 		const object = helpStringToObject(meowLarge)
-		if (object) helpObjectToMarkdown(object)
+		if (object) {
+			helpObjectToMarkdown(object)
+		}
 	})
 })

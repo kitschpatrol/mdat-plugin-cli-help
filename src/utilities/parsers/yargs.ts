@@ -332,12 +332,16 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	}
 
 	private getArray(context: any): any[] | undefined {
-		if (context === undefined) return undefined
+		if (context === undefined) {
+			return undefined
+		}
 		return context.map((entry: any) => entry.image)
 	}
 
 	private getString(context: any, clean = false): string | undefined {
-		if (context === undefined) return undefined
+		if (context === undefined) {
+			return undefined
+		}
 
 		return context.map((entry: any) => (clean ? this.clean(entry.image) : entry.image)).join(' ')
 	}
@@ -345,7 +349,9 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	// Helpers
 	private positionalParentCommandToArguments(object: Command & Option & Positional): Positional {
 		const { arguments: theArguments, parentCommandName, ...rest } = object
-		if (parentCommandName === undefined) return object
+		if (parentCommandName === undefined) {
+			return object
+		}
 		return {
 			arguments: [parentCommandName, ...(theArguments ?? [])],
 			...rest,
@@ -353,7 +359,9 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	}
 
 	private splitChoices(text: string | undefined): string[] | undefined {
-		if (text === undefined) return undefined
+		if (text === undefined) {
+			return undefined
+		}
 		// Remove brackets and commas from the outside of the text
 		return this.clean(text.replaceAll(/^\[choices:\s/g, '')).split(', ')
 	}

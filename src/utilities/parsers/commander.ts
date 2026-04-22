@@ -300,7 +300,9 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	 * Clean a Commander default value: strip `(default: ...)` wrapper, env info, and quotes.
 	 */
 	private cleanDefault(text: string | undefined): string | undefined {
-		if (text === undefined) return undefined
+		if (text === undefined) {
+			return undefined
+		}
 
 		let cleaned = text
 			.replaceAll(/^\(default:\s*/g, '')
@@ -317,12 +319,16 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	}
 
 	private getArray(context: any): any[] | undefined {
-		if (context === undefined) return undefined
+		if (context === undefined) {
+			return undefined
+		}
 		return context.map((entry: any) => entry.image)
 	}
 
 	private getString(context: any): string | undefined {
-		if (context === undefined) return undefined
+		if (context === undefined) {
+			return undefined
+		}
 		return context.map((entry: any) => entry.image).join(' ')
 	}
 
@@ -330,7 +336,9 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	 * Trim leading/trailing whitespace from description text.
 	 */
 	private trimDescription(text: string | undefined): string | undefined {
-		if (text === undefined) return undefined
+		if (text === undefined) {
+			return undefined
+		}
 		return text.trim() || undefined
 	}
 }

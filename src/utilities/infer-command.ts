@@ -16,7 +16,9 @@ export async function inferCommand(cliCommand: string | undefined): Promise<stri
 }
 
 function firstOf<T>(value: T | T[] | undefined): T | undefined {
-	if (value === undefined) return undefined
+	if (value === undefined) {
+		return undefined
+	}
 	return Array.isArray(value) ? value[0] : value
 }
 
