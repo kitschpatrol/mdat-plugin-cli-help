@@ -1,6 +1,7 @@
 /**
- * This file is vendored with modification from https://github.com/sindresorhus/is-executable
- * to work around a "[DEP0176] DeprecationWarning: fs.X_OK is deprecated, use fs.constants.X_OK instead"
+ * This file is vendored with modification from
+ * https://github.com/sindresorhus/is-executable to work around a "[DEP0176]
+ * DeprecationWarning: fs.X_OK is deprecated, use fs.constants.X_OK instead"
  * error from Node.
  */
 

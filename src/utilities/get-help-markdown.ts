@@ -11,8 +11,8 @@ import { log } from './log'
  * @param helpFlag - The flag to pass to get help output
  * @param depth - Max recursion depth for subcommands
  * @param subcommands - Initial subcommand path to invoke before the help flag
- *   (e.g. `['remote', 'add']` produces `command remote add --help`).
- *   Discovered subcommands are appended to this path during recursion.
+ *   (e.g. `['remote', 'add']` produces `command remote add --help`). Discovered
+ *   subcommands are appended to this path during recursion.
  */
 export async function getHelpMarkdown(
 	command: string,
@@ -65,6 +65,7 @@ async function renderHelpMarkdownObject(
 			if (!command.parentCommandName || !command.commandName) {
 				continue
 			}
+
 			const subCommandHelp = await getHelpMarkdownInternal(
 				executable,
 				[...subcommands, command.commandName],

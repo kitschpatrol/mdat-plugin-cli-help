@@ -30,13 +30,16 @@ const cli = meow(
 
 /**
  * Example CLI function
+ *
  * @param {string | undefined} input The input argument
- * @param {{ rainbow: boolean | undefined; } & Record<string, unknown>} flags The flags
+ * @param {{ rainbow: boolean | undefined } & Record<string, unknown>} flags
+ *   The flags
  */
 function foo(input, flags) {
 	if (!input) {
 		throw new Error('Input is required')
 	}
+
 	console.log(input, flags)
 }
 

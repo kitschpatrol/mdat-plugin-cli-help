@@ -6,7 +6,10 @@ import { log } from './log'
 
 /**
  * Accommodate missing or sloppy cli help command input
- * @param command - Can be nothing, a command name on the path like `git`, or a path to an executable like `./bin/cli.js`
+ *
+ * @param command - Can be nothing, a command name on the path like `git`, or a
+ *   path to an executable like `./bin/cli.js`
+ *
  * @returns The path to a verified executable
  * @throws {Error} If nothing can be inferred or resolved
  */
@@ -19,6 +22,7 @@ function firstOf<T>(value: T | T[] | undefined): T | undefined {
 	if (value === undefined) {
 		return undefined
 	}
+
 	return Array.isArray(value) ? value[0] : value
 }
 
@@ -94,6 +98,7 @@ async function getCommandPathFromPackage(commandName: string): Promise<string | 
 			if (key === commandName) {
 				return value
 			}
+
 			if (path.normalize(value) === path.normalize(commandName)) {
 				return value
 			}

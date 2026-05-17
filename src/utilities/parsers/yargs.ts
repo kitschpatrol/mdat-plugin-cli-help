@@ -335,6 +335,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (context === undefined) {
 			return undefined
 		}
+
 		return context.map((entry: any) => entry.image)
 	}
 
@@ -352,6 +353,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (parentCommandName === undefined) {
 			return object
 		}
+
 		return {
 			arguments: [parentCommandName, ...(theArguments ?? [])],
 			...rest,
@@ -362,6 +364,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (text === undefined) {
 			return undefined
 		}
+
 		// Remove brackets and commas from the outside of the text
 		return this.clean(text.replaceAll(/^\[choices:\s/g, '')).split(', ')
 	}

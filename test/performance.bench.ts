@@ -96,7 +96,10 @@ function generateCommanderHelp(optionCount: number, commandCount: number): strin
 	return lines.join('\n')
 }
 
-/** Generate a Meow-style help string with `n` options. Meow doesn't support commands. */
+/**
+ * Generate a Meow-style help string with `n` options. Meow doesn't support
+ * commands.
+ */
 function generateMeowHelp(optionCount: number): string {
 	const lines: string[] = [
 		'',

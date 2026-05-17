@@ -297,7 +297,8 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	// Helpers
 
 	/**
-	 * Clean a Commander default value: strip `(default: ...)` wrapper, env info, and quotes.
+	 * Clean a Commander default value: strip `(default: ...)` wrapper, env info,
+	 * and quotes.
 	 */
 	private cleanDefault(text: string | undefined): string | undefined {
 		if (text === undefined) {
@@ -322,6 +323,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (context === undefined) {
 			return undefined
 		}
+
 		return context.map((entry: any) => entry.image)
 	}
 
@@ -329,6 +331,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (context === undefined) {
 			return undefined
 		}
+
 		return context.map((entry: any) => entry.image).join(' ')
 	}
 
@@ -339,6 +342,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (text === undefined) {
 			return undefined
 		}
+
 		return text.trim() || undefined
 	}
 }
@@ -428,8 +432,8 @@ export function helpStringToObject(helpString: string): ProgramInfo {
  * (typically 30+ spaces). The lexer's ROW_MODE exits on newline, so we must
  * unwrap these before tokenizing.
  *
- * Detection: a continuation line has 4+ leading spaces and does NOT start a
- * new row (which would be exactly 2 spaces + a non-space character).
+ * Detection: a continuation line has 4+ leading spaces and does NOT start a new
+ * row (which would be exactly 2 spaces + a non-space character).
  */
 const continuationLinePattern = /^ {4,}/
 const newRowPattern = /^ {2}\S/

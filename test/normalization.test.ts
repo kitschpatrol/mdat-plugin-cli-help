@@ -10,9 +10,9 @@ const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
 const fixturesDirectory = `${importMetaDirname}/assets/fixtures`
 
 /**
- * Wide columns to prevent line wrapping in CLI help output.
- * Both Yargs and Commander respect the COLUMNS environment variable.
- * Meow doesn't wrap (it outputs the help text as-is).
+ * Wide columns to prevent line wrapping in CLI help output. Both Yargs and
+ * Commander respect the COLUMNS environment variable. Meow doesn't wrap (it
+ * outputs the help text as-is).
  */
 // eslint-disable-next-line ts/naming-convention
 const wideEnv = { ...process.env, COLUMNS: '200' }

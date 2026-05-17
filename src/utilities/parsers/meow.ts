@@ -218,6 +218,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (context === undefined) {
 			return undefined
 		}
+
 		return context.map((entry: any) => entry.image)
 	}
 
@@ -225,6 +226,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		if (context === undefined) {
 			return undefined
 		}
+
 		return context.map((entry: any) => (clean ? this.clean(entry.image) : entry.image)).join(' ')
 	}
 }
