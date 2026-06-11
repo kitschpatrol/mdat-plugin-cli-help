@@ -9,10 +9,13 @@ publicHoistPattern:
   - '*prettier*'
   - '*remark*'
   - '*stylelint*'
-
 overrides:
   normalize-package-data: ^9.0.0
 allowBuilds:
   esbuild: true
   puppeteer: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@kitschpatrol/*'
+  - mdat
+  - remark-mdat
