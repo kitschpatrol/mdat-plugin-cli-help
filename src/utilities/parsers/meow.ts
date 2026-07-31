@@ -16,6 +16,10 @@ import { getCommandParts } from './index'
 
 // Lexer ----------------------------------------------------------------------
 
+// Token patterns must not use the `v` flag: Chevrotain's regexp-to-ast library
+// can't parse it, which breaks lexer optimizations and line-break detection.
+/* eslint-disable require-unicode-regexp */
+
 // Tokens
 const flag = createToken({ name: 'flag', pattern: /--[\w-]+/ })
 const alias = createToken({ longer_alt: flag, name: 'alias', pattern: /-[A-Z]/i })
@@ -29,7 +33,7 @@ const dollar = createToken({
 	name: 'dollar',
 	pattern: /\$/,
 })
-const whiteSpace = createToken({
+const whitespace = createToken({
 	group: Lexer.SKIPPED,
 	name: 'whiteSpace',
 	pattern: / /,
@@ -95,14 +99,16 @@ const endOptions = createToken({
 	pop_mode: true,
 })
 
+/* eslint-enable require-unicode-regexp */
+
 // Create lexer
 const lexer = new Lexer({
 	defaultMode: 'DEFAULT_MODE',
 	modes: {
-		DEFAULT_MODE: [startUsage, startOptions, programDescription, newLine, whiteSpace],
+		DEFAULT_MODE: [startUsage, startOptions, programDescription, newLine, whitespace],
 		OPTIONS_MODE: [endOptions, startRow],
-		ROW_MODE: [endRow, alias, flag, comma, argument, rowDescription, whiteSpace],
-		USAGE_MODE: [endUsage, dollar, argument, word, whiteSpace],
+		ROW_MODE: [endRow, alias, flag, comma, argument, rowDescription, whitespace],
+		USAGE_MODE: [endUsage, dollar, argument, word, whitespace],
 	},
 })
 
@@ -111,7 +117,7 @@ const allTokens = [
 	alias,
 	comma,
 	dollar,
-	whiteSpace,
+	whitespace,
 	newLine,
 	word,
 	argument,
@@ -192,7 +198,8 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 			arguments: this.getArray(context.argument),
 			commandName,
 			description: this.getString(context.description),
-			options: context.optionsSection ? this.visit(context.optionsSection) : undefined,
+			options:
+				context.optionsSection === undefined ? undefined : this.visit(context.optionsSection),
 			subcommandName,
 		}
 	}
@@ -211,7 +218,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	private clean(text: string): string {
 		// Remove brackets. default prefix, and trim
 		// eslint-disable-next-line regexp/no-unused-capturing-group
-		return text.replaceAll(/^[\s[]*(default:)?\s*|[\s\]]*$/g, '')
+		return text.replaceAll(/^[\s\[]*(default:)?\s*|[\s\]]*$/gv, '')
 	}
 
 	private getArray(context: any): any[] | undefined {
@@ -259,11 +266,12 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	// Visit + Objectify
 	let programInfo: ProgramInfo | undefined
 	try {
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		programInfo = visitor.visit(cst) as ProgramInfo
 	} catch (error) {
 		if (error instanceof Error) {
-			throw new TypeError(`Errors visiting CLI command help text: ${String(error)}`)
+			throw new TypeError(`Errors visiting CLI command help text: ${String(error)}`, {
+				cause: error,
+			})
 		}
 	}
 

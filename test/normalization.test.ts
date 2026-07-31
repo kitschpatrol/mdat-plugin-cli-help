@@ -25,7 +25,7 @@ async function getFixtureHelp(script: string): Promise<{ parsed: ProgramInfo; ra
 		env: wideEnv,
 	})
 
-	const raw = stdout || stderr
+	const raw = stdout === '' ? stderr : stdout
 	const parsed = helpStringToObject(raw)
 
 	if (parsed === undefined) {
@@ -151,10 +151,12 @@ describe('cross-framework normalization', { timeout: 30_000 }, () => {
 
 	it('should set parentCommandName on commander commands for recursion', () => {
 		// Commander commands need parentCommandName for the recursive subcommand flow
-		for (const cmd of commanderParsed.commands ?? []) {
-			if (cmd.commandName) {
-				expect(cmd.parentCommandName).toBe('test-cli')
-			}
+		const namedCommands = (commanderParsed.commands ?? []).filter(
+			(command) => command.commandName !== undefined && command.commandName !== '',
+		)
+
+		for (const command of namedCommands) {
+			expect(command.parentCommandName).toBe('test-cli')
 		}
 	})
 })
@@ -170,7 +172,7 @@ describe('yargs wrapped output', { timeout: 30_000 }, () => {
 			{ env: narrowEnv },
 		)
 
-		const raw = stdout || stderr
+		const raw = stdout === '' ? stderr : stdout
 
 		// Verify the output is actually wrapped (contains continuation lines)
 		expect(raw).toContain('\n                            ')

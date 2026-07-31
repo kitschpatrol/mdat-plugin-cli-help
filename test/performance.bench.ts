@@ -85,9 +85,9 @@ function generateCommanderHelp(optionCount: number, commandCount: number): strin
 	if (commandCount > 0) {
 		lines.push('', 'Commands:')
 		for (let i = 0; i < commandCount; i++) {
-			const cmdName = `cmd-${i}`
-			const padding = ' '.repeat(Math.max(2, 30 - cmdName.length - 6))
-			lines.push(`  ${cmdName} <arg>${padding}Run command number ${i}`)
+			const commandName = `cmd-${i}`
+			const padding = ' '.repeat(Math.max(2, 30 - commandName.length - 6))
+			lines.push(`  ${commandName} <arg>${padding}Run command number ${i}`)
 		}
 
 		lines.push(`  help [command]${' '.repeat(19)}display help for command`)

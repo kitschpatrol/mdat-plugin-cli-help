@@ -16,6 +16,10 @@ import { getCommandParts } from './index'
 
 // Lexer ----------------------------------------------------------------------
 
+// Token patterns must not use the `v` flag: Chevrotain's regexp-to-ast library
+// can't parse it, which breaks lexer optimizations and line-break detection.
+/* eslint-disable require-unicode-regexp */
+
 const flag = createToken({ name: 'flag', pattern: /--[\w-]+/ })
 const alias = createToken({ name: 'alias', pattern: /-[A-Z]/i })
 const comma = createToken({
@@ -52,7 +56,7 @@ const choices = createToken({
 	pattern: /\[choices:\s.+?\]/,
 })
 
-const whiteSpace = createToken({
+const whitespace = createToken({
 	group: Lexer.SKIPPED,
 	name: 'whiteSpace',
 	pattern: /\s/,
@@ -125,6 +129,8 @@ const endSection = createToken({
 	pop_mode: true,
 })
 
+/* eslint-enable require-unicode-regexp */
+
 // Create lexer
 const lexer = new Lexer({
 	defaultMode: 'DEFAULT_MODE',
@@ -136,7 +142,7 @@ const lexer = new Lexer({
 			startProgramDescription,
 			argument,
 			word,
-			whiteSpace,
+			whitespace,
 		],
 		PROGRAM_DESCRIPTION_MODE: [endProgramDescription, programDescription],
 		ROW_MODE: [
@@ -153,7 +159,7 @@ const lexer = new Lexer({
 			alias,
 			argument,
 			word,
-			whiteSpace,
+			whitespace,
 		],
 		SECTION_MODE: [startRow, endSection],
 	},
@@ -170,7 +176,7 @@ const allTokens = [
 	required,
 	defaultInfoDescription,
 	choices,
-	whiteSpace,
+	whitespace,
 	startProgramDescription,
 	programDescription,
 	endProgramDescription,
@@ -295,10 +301,15 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		return {
 			arguments: this.getArray(context.argument),
 			commandName,
-			commands: context.commandsSection ? this.visit(context.commandsSection) : undefined,
+			commands:
+				context.commandsSection === undefined ? undefined : this.visit(context.commandsSection),
 			description: this.getString(context.description),
-			options: context.optionsSection ? this.visit(context.optionsSection) : undefined,
-			positionals: context.positionalsSection ? this.visit(context.positionalsSection) : undefined,
+			options:
+				context.optionsSection === undefined ? undefined : this.visit(context.optionsSection),
+			positionals:
+				context.positionalsSection === undefined
+					? undefined
+					: this.visit(context.positionalsSection),
 			subcommandName,
 		}
 	}
@@ -309,12 +320,12 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 			arguments: this.getArray(context.argument),
 			choices: this.splitChoices(this.getString(context.choices)),
 			commandName: this.getString(context.commandName),
-			default: context.defaultInfo ? true : undefined,
+			default: context.defaultInfo === undefined ? undefined : true,
 			defaultValue: this.getString(context.defaultInfoDescription, true),
 			description: this.getString(context.description, true),
 			flags: this.getArray(context.flag),
 			parentCommandName: this.getString(context.parentCommandName),
-			required: context.required ? true : undefined,
+			required: context.required === undefined ? undefined : true,
 			type: this.getString(context.type, true),
 		}
 	}
@@ -324,11 +335,11 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		// Special case for `array` type positionals like `[default: ["readme.md"]]`
 		if (text.endsWith(']]')) {
 			// eslint-disable-next-line regexp/no-unused-capturing-group
-			return text.replaceAll(/(^\[default:\s*)|(\]$)/g, '')
+			return text.replaceAll(/(^\[default:\s*)|(\]$)/gv, '')
 		}
 
 		// eslint-disable-next-line regexp/no-unused-capturing-group
-		return text.replaceAll(/^[\s[]*(default:)?\s*|[\s\]]*$/g, '')
+		return text.replaceAll(/^[\s\[]*(default:)?\s*|[\s\]]*$/gv, '')
 	}
 
 	private getArray(context: any): any[] | undefined {
@@ -366,7 +377,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		}
 
 		// Remove brackets and commas from the outside of the text
-		return this.clean(text.replaceAll(/^\[choices:\s/g, '')).split(', ')
+		return this.clean(text.replaceAll(/^\[choices:\s/gv, '')).split(', ')
 	}
 }
 
@@ -403,11 +414,12 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	// Visit + Objectify
 	let programInfo: ProgramInfo | undefined
 	try {
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		programInfo = visitor.visit(cst) as ProgramInfo
 	} catch (error) {
 		if (error instanceof Error) {
-			throw new TypeError(`Errors visiting CLI command help text: ${String(error)}`)
+			throw new TypeError(`Errors visiting CLI command help text: ${String(error)}`, {
+				cause: error,
+			})
 		}
 	}
 
@@ -431,9 +443,9 @@ export function helpStringToObject(helpString: string): ProgramInfo {
  * `-r, --rules`, 6 spaces for long-only options like `--config`), so we cannot
  * rely on indent depth alone to distinguish new rows from continuations.
  */
-const deepIndentPattern = /^ {4,}/
-const newOptionRowPattern = /^ *-/
-const sectionHeaderPattern = /^(?:Options|Commands|Positionals):?\s*$/
+const deepIndentPattern = /^ {4,}/v
+const newOptionRowPattern = /^ *-/v
+const sectionHeaderPattern = /^(?:Options|Commands|Positionals):?\s*$/v
 function unwrapContinuationLines(helpString: string): string {
 	const lines = helpString.split('\n')
 	const result: string[] = []

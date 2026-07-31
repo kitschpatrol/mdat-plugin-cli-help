@@ -62,7 +62,12 @@ async function renderHelpMarkdownObject(
 	// Check for subcommands
 	if (programInfo.commands) {
 		for (const command of programInfo.commands) {
-			if (!command.parentCommandName || !command.commandName) {
+			if (
+				command.parentCommandName === undefined ||
+				command.parentCommandName === '' ||
+				command.commandName === undefined ||
+				command.commandName === ''
+			) {
 				continue
 			}
 
@@ -104,13 +109,15 @@ async function getHelpString(command: string, args: string[]): Promise<string> {
 		const { stderr, stdout } = await execa(command, args, { preferLocal: true })
 		rawHelpString = stdout
 
-		// eslint-disable-next-line ts/no-unnecessary-condition
-		if (rawHelpString === undefined || rawHelpString === '') {
+		if (rawHelpString === '') {
 			rawHelpString = stderr
 		}
 	} catch (error) {
 		if (error instanceof Error) {
-			throw new TypeError(`Error running CLI help command: "${displayCommand}"\n${error.message}\n`)
+			throw new TypeError(
+				`Error running CLI help command: "${displayCommand}"\n${error.message}\n`,
+				{ cause: error },
+			)
 		}
 	}
 

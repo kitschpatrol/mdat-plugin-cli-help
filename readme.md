@@ -6,8 +6,8 @@
 
 <!-- badges -->
 
-[![NPM Package mdat-plugin-cli-help](https://img.shields.io/npm/v/mdat-plugin-cli-help.svg)](https://npmjs.com/package/mdat-plugin-cli-help)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
+[![NPM Package mdat-plugin-cli-help](https://img.shields.io/npm/v/mdat-plugin-cli-help.svg)](https://www.npmjs.com/package/mdat-plugin-cli-help)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![CI](https://github.com/kitschpatrol/mdat-plugin-cli-help/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/mdat-plugin-cli-help/actions/workflows/ci.yml)
 
 <!-- /badges -->

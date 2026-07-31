@@ -16,6 +16,10 @@ import { getCommandParts } from './index'
 
 // Lexer ----------------------------------------------------------------------
 
+// Token patterns must not use the `v` flag: Chevrotain's regexp-to-ast library
+// can't parse it, which breaks lexer optimizations and line-break detection.
+/* eslint-disable require-unicode-regexp */
+
 const flag = createToken({ name: 'flag', pattern: /--[\w-]+/ })
 const alias = createToken({ name: 'alias', pattern: /-[A-Z]/i })
 const comma = createToken({
@@ -33,7 +37,7 @@ const defaultInfoParens = createToken({
 	pattern: /\(default:\s.+?\)/,
 })
 
-const whiteSpace = createToken({
+const whitespace = createToken({
 	group: Lexer.SKIPPED,
 	name: 'whiteSpace',
 	pattern: /\s/,
@@ -115,6 +119,8 @@ const endSection = createToken({
 	pop_mode: true,
 })
 
+/* eslint-enable require-unicode-regexp */
+
 // Create lexer
 const lexer = new Lexer({
 	defaultMode: 'DEFAULT_MODE',
@@ -127,7 +133,7 @@ const lexer = new Lexer({
 			startProgramDescription,
 			argument,
 			word,
-			whiteSpace,
+			whitespace,
 		],
 		PROGRAM_DESCRIPTION_MODE: [endProgramDescription, programDescription],
 		ROW_MODE: [
@@ -140,7 +146,7 @@ const lexer = new Lexer({
 			alias,
 			argument,
 			word,
-			whiteSpace,
+			whitespace,
 		],
 		SECTION_MODE: [startRow, endSection],
 	},
@@ -153,7 +159,7 @@ const allTokens = [
 	word,
 	argument,
 	defaultInfoParens,
-	whiteSpace,
+	whitespace,
 	usagePrefix,
 	startProgramDescription,
 	programDescription,
@@ -251,7 +257,7 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 			const row = this.visit(entry)
 			// Commander's Arguments: rows use word (commandName label) for the arg name
 			return {
-				arguments: row.commandName ? [row.commandName] : undefined,
+				arguments: row.commandName === undefined ? undefined : [row.commandName],
 				defaultValue: row.defaultValue,
 				description: row.description,
 			}
@@ -275,10 +281,13 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		return {
 			arguments: this.getArray(context.argument),
 			commandName,
-			commands: context.commandsSection ? this.visit(context.commandsSection) : undefined,
+			commands:
+				context.commandsSection === undefined ? undefined : this.visit(context.commandsSection),
 			description: this.getString(context.description),
-			options: context.optionsSection ? this.visit(context.optionsSection) : undefined,
-			positionals: context.argumentsSection ? this.visit(context.argumentsSection) : undefined,
+			options:
+				context.optionsSection === undefined ? undefined : this.visit(context.optionsSection),
+			positionals:
+				context.argumentsSection === undefined ? undefined : this.visit(context.argumentsSection),
 			subcommandName,
 		}
 	}
@@ -306,17 +315,17 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 		}
 
 		let cleaned = text
-			.replaceAll(/^\(default:\s*/g, '')
-			.replaceAll(/\)$/g, '')
+			.replaceAll(/^\(default:\s*/gv, '')
+			.replaceAll(/\)$/gv, '')
 			.trim()
 
 		// Strip env info suffix if present: ", env: VAR_NAME"
-		cleaned = cleaned.replaceAll(/,\s*env:\s*\S+$/g, '').trim()
+		cleaned = cleaned.replaceAll(/,\s*env:\s*\S+$/gv, '').trim()
 
 		// Strip surrounding quotes
-		cleaned = cleaned.replaceAll(/^["']|["']$/g, '')
+		cleaned = cleaned.replaceAll(/^["']|["']$/gv, '')
 
-		return cleaned || undefined
+		return cleaned === '' ? undefined : cleaned
 	}
 
 	private getArray(context: any): any[] | undefined {
@@ -343,7 +352,8 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 			return undefined
 		}
 
-		return text.trim() || undefined
+		const trimmed = text.trim()
+		return trimmed === '' ? undefined : trimmed
 	}
 }
 
@@ -385,11 +395,12 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	// Visit + Objectify
 	let programInfo: ProgramInfo | undefined
 	try {
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		programInfo = visitor.visit(cst) as ProgramInfo
 	} catch (error) {
 		if (error instanceof Error) {
-			throw new TypeError(`Errors visiting CLI command help text: ${String(error)}`)
+			throw new TypeError(`Errors visiting CLI command help text: ${String(error)}`, {
+				cause: error,
+			})
 		}
 	}
 
@@ -403,16 +414,20 @@ export function helpStringToObject(helpString: string): ProgramInfo {
 	// "test-cli greet <name>"), so we infer it from the top-level command name.
 	if (programInfo.commands) {
 		programInfo.commands = programInfo.commands.filter(
-			(cmd) => cmd.commandName !== undefined || cmd.description !== undefined,
+			(command) => command.commandName !== undefined || command.description !== undefined,
 		)
 
 		// Filter out Commander's built-in "help" command — recursing into it
 		// re-outputs the top-level help, causing duplicate content.
-		programInfo.commands = programInfo.commands.filter((cmd) => cmd.commandName !== 'help')
+		programInfo.commands = programInfo.commands.filter((command) => command.commandName !== 'help')
 
-		for (const cmd of programInfo.commands) {
-			if (cmd.commandName && !cmd.parentCommandName) {
-				cmd.parentCommandName = programInfo.commandName
+		for (const command of programInfo.commands) {
+			if (
+				command.commandName !== undefined &&
+				command.commandName !== '' &&
+				(command.parentCommandName === undefined || command.parentCommandName === '')
+			) {
+				command.parentCommandName = programInfo.commandName
 			}
 		}
 
@@ -435,8 +450,8 @@ export function helpStringToObject(helpString: string): ProgramInfo {
  * Detection: a continuation line has 4+ leading spaces and does NOT start a new
  * row (which would be exactly 2 spaces + a non-space character).
  */
-const continuationLinePattern = /^ {4,}/
-const newRowPattern = /^ {2}\S/
+const continuationLinePattern = /^ {4,}/v
+const newRowPattern = /^ {2}\S/v
 
 function unwrapContinuationLines(helpString: string): string {
 	const lines = helpString.split('\n')

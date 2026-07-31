@@ -36,7 +36,7 @@ const cli = meow(
  *   The flags
  */
 function foo(input, flags) {
-	if (!input) {
+	if (input === undefined || input === '') {
 		throw new Error('Input is required')
 	}
 

@@ -70,7 +70,7 @@ export function getCommandParts(wholeCommand: string | undefined): {
 	}
 
 	if (parts.length === 1) {
-		return { command: parts[0], subcommand: undefined }
+		return { command: wholeCommand, subcommand: undefined }
 	}
 
 	const subcommand = parts.at(-1) // Get the last element

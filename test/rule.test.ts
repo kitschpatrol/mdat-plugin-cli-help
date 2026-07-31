@@ -93,10 +93,10 @@ describe('cli help invocation', { timeout: 60_000 }, () => {
 	})
 
 	// Skipping this test for now since this package doesn't export a binary
-	it.skip('should try to infer the binary to get help from based on package.json', async () => {
+	it.todo('should try to infer the binary to get help from based on package.json', async () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
-		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
+		// eslint-disable-next-line ts/no-unsafe-assignment
 		const helpMarkdown = await cliHelpRule.content()
 		expect(helpMarkdown).toMatchSnapshot()
 	})
@@ -104,7 +104,7 @@ describe('cli help invocation', { timeout: 60_000 }, () => {
 	it('should correctly identify executables', async () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
-		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
+		// eslint-disable-next-line ts/no-unsafe-assignment
 		const helpMarkdown = await cliHelpRule.content({ command: 'git' })
 		expect(helpMarkdown).toContain('```')
 		expect(helpMarkdown).toContain('usage: git')
@@ -113,14 +113,14 @@ describe('cli help invocation', { timeout: 60_000 }, () => {
 	it('should correctly identify non-executables', async () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
-		// eslint-disable-next-line ts/no-unsafe-call
+
 		await expect(cliHelpRule.content({ command: '/dev/null' })).rejects.toThrow()
 	})
 
 	it('should correctly resolve binary names that are in package.json but not on the path', async () => {
 		// TODO figure this out
 		// @ts-expect-error - Types not narrowing...
-		// eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
+		// eslint-disable-next-line ts/no-unsafe-assignment
 		const helpMarkdown = await cliHelpRule.content({ command: 'mdat' })
 		expect(helpMarkdown).toMatchSnapshot()
 	})

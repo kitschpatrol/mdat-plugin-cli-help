@@ -44,13 +44,13 @@ export function helpObjectToMarkdown(
 				programInfo.positionals.map((positional) => [
 					positional.arguments ? [positional.arguments.map((a) => `\`${a}\``)].join(' ') : '',
 					`${positional.description ?? ''}${positional.required === undefined ? '' : positional.required ? ' _(Required.)_' : ' _(Optional.)_'}`,
-					positional.type ? `\`${positional.type}\`` : '',
+					positional.type === undefined || positional.type === '' ? '' : `\`${positional.type}\``,
 					// Don't print as code if it contains a space
-					positional.defaultValue
-						? positional.defaultValue.includes(' ')
+					positional.defaultValue === undefined || positional.defaultValue === ''
+						? ''
+						: positional.defaultValue.includes(' ')
 							? positional.defaultValue
-							: `\`${positional.defaultValue}\``
-						: '',
+							: `\`${positional.defaultValue}\``,
 				]),
 			),
 		)
@@ -89,16 +89,16 @@ export function helpObjectToMarkdown(
 					// Type is kind of weird in relation to arguments...
 					option.choices
 						? option.choices.map((choice) => `\`${choice}\``).join(' ')
-						: option.type
-							? `\`${option.type}\``
-							: '',
+						: option.type === undefined || option.type === ''
+							? ''
+							: `\`${option.type}\``,
 
 					// Don't print as code if it contains a space, unless it's a choice option
-					option.defaultValue
-						? option.defaultValue.includes(' ') && option.choices === undefined
+					option.defaultValue === undefined || option.defaultValue === ''
+						? ''
+						: option.defaultValue.includes(' ') && option.choices === undefined
 							? option.defaultValue
-							: `\`${option.defaultValue}\``
-						: '',
+							: `\`${option.defaultValue}\``,
 				]),
 			),
 		)
@@ -117,7 +117,10 @@ function determineCommandContext(programInfo: ProgramInfo, depthRemaining: numbe
 	const canRecurse = depthRemaining > 1
 	const defaultCommand = programInfo.commands?.find((command) => command.default)
 	const topLevelCommand = programInfo.commands?.find((command) => command.commandName === undefined)
-	const fullCommandName = `${programInfo.commandName}${programInfo.subcommandName ? ` ${programInfo.subcommandName}` : ''}`
+	const fullCommandName =
+		programInfo.subcommandName === undefined || programInfo.subcommandName === ''
+			? programInfo.commandName
+			: `${programInfo.commandName} ${programInfo.subcommandName}`
 	const commandsOnly =
 		canRecurse && hasMultipleSubcommands && defaultCommand?.commandName !== undefined
 
@@ -140,10 +143,11 @@ function formatSectionTitle(context: CommandContext): string {
 }
 
 function formatDescription(programInfo: ProgramInfo, context: CommandContext): string {
-	if (context.isTopLevel && context.topLevelCommand?.description) {
+	const topLevelDescription = context.topLevelCommand?.description
+	if (topLevelDescription !== undefined && topLevelDescription !== '' && context.isTopLevel) {
 		// Prune the top level command from the commands list, since it's described above
 		programInfo.commands = programInfo.commands?.filter((c) => c !== context.topLevelCommand)
-		return context.topLevelCommand.description
+		return topLevelDescription
 	}
 
 	return programInfo.description ?? ''
@@ -188,19 +192,12 @@ function findEmptyColumns(rows: string[][]): number[] {
 	const emptyColumnsIndexes: number[] = []
 
 	// Assume all rows have the same number of columns as the first row
-	const numberColumns = rows[0]?.length || 0
+	const numberColumns = rows[0]?.length ?? 0
 
 	for (let columnIndex = 0; columnIndex < numberColumns; columnIndex++) {
-		let allEmpty = true
+		const isColumnEmpty = rows.every((row) => row[columnIndex] === '')
 
-		for (const row of rows) {
-			if (row[columnIndex] !== '') {
-				allEmpty = false
-				break
-			}
-		}
-
-		if (allEmpty) {
+		if (isColumnEmpty) {
 			emptyColumnsIndexes.push(columnIndex)
 		}
 	}
