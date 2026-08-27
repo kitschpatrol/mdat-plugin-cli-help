@@ -2571,3 +2571,20 @@ exports[`cli help string to object > should convert "yanki --help" to a valid pr
   "subcommandName": undefined,
 }
 `;
+
+exports[`parser option > should parse with a specific matching parser 1`] = `
+"#### Command: \`foo\`
+
+Mdat plugin to generate tabular help documentation for CLI tools in Markdown files.
+
+Usage:
+
+\`\`\`txt
+foo <input>
+\`\`\`
+
+| Option | Description |
+| --- | --- |
+| \`--rainbow\`<br>\`-r\` | Include a rainbow |
+"
+`;

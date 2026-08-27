@@ -13,6 +13,8 @@ const cliHelpRule = cliHelpPlugin['cli-help']
 
 const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
 
+const RAW_HELP_FENCE_REGEX = /^```txt/v
+
 // Load all --help command output samples in ./assets/help-supported
 const helpSamplesSupported = fs
 	.readdirSync(`${importMetaDirname}/assets/help-supported`)
@@ -78,6 +80,42 @@ describe('cli help fall back on unparsable output', () => {
 			expect(markdown).toMatchSnapshot()
 		})
 	}
+})
+
+describe('parser option', { timeout: 60_000 }, () => {
+	// Meow-based test CLI
+	const cliPath = `${importMetaDirname}/assets/cli.js`
+
+	it('should parse with a specific matching parser', async () => {
+		const helpMarkdown = await getHelpMarkdown(cliPath, '--help', undefined, [], 'meow')
+		expect(helpMarkdown.startsWith('```txt')).toBe(false)
+		expect(helpMarkdown).toContain('Command:')
+		expect(helpMarkdown).toMatchSnapshot()
+	})
+
+	it('should fall back to raw output when the requested parser does not match', async () => {
+		const helpMarkdown = await getHelpMarkdown(cliPath, '--help', undefined, [], 'commander')
+		expect(helpMarkdown.startsWith('```txt')).toBe(true)
+		expect(helpMarkdown).not.toContain('Command:')
+	})
+
+	it('should skip parsing entirely when the parser is "none"', async () => {
+		const helpMarkdown = await getHelpMarkdown(cliPath, '--help', undefined, [], 'none')
+		expect(helpMarkdown.startsWith('```txt')).toBe(true)
+		expect(helpMarkdown).not.toContain('Command:')
+	})
+
+	it('should accept the parser option through the rule', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath, parser: 'none' })
+		expect(helpMarkdown).toMatch(RAW_HELP_FENCE_REGEX)
+	})
+
+	it('should reject invalid parser values', async () => {
+		// @ts-expect-error - Types not narrowing...
+		await expect(cliHelpRule.content({ command: cliPath, parser: 'invalid' })).rejects.toThrow()
+	})
 })
 
 describe('cli help invocation', { timeout: 60_000 }, () => {

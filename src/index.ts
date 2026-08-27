@@ -14,6 +14,7 @@ const cliHelpRule: Rule = {
 				command: z.string().optional(),
 				depth: z.number().optional(),
 				helpFlag: z.string().optional(),
+				parser: z.enum(['auto', 'commander', 'meow', 'none', 'yargs']).optional(),
 				subcommand: z.string().optional(),
 			})
 			.strict()
@@ -26,6 +27,7 @@ const cliHelpRule: Rule = {
 			validOptions?.helpFlag,
 			validOptions?.depth,
 			subcommands,
+			validOptions?.parser,
 		)
 	},
 }

@@ -1,5 +1,5 @@
 import { execa } from 'execa'
-import type { ProgramInfo } from './parsers/index'
+import type { ParserOption, ProgramInfo } from './parsers/index'
 import { helpObjectToMarkdown } from './help-object-to-markdown'
 import { helpStringToObject } from './help-string-to-object'
 import { log } from './log'
@@ -13,14 +13,24 @@ import { log } from './log'
  * @param subcommands - Initial subcommand path to invoke before the help flag
  *   (e.g. `['remote', 'add']` produces `command remote add --help`). Discovered
  *   subcommands are appended to this path during recursion.
+ * @param parser - Help output parser selection. `'auto'` tries all parsers in
+ *   order, a specific parser name tries only that parser, and `'none'` skips
+ *   parsing so the raw help output is rendered in a code fence.
  */
 export async function getHelpMarkdown(
 	command: string,
 	helpFlag = '--help',
 	depth?: number,
 	subcommands: string[] = [],
+	parser: ParserOption = 'auto',
 ): Promise<string> {
-	return getHelpMarkdownInternal(command, subcommands, helpFlag, depth ?? Number.MAX_SAFE_INTEGER)
+	return getHelpMarkdownInternal(
+		command,
+		subcommands,
+		helpFlag,
+		depth ?? Number.MAX_SAFE_INTEGER,
+		parser,
+	)
 }
 
 async function getHelpMarkdownInternal(
@@ -28,21 +38,22 @@ async function getHelpMarkdownInternal(
 	subcommands: string[],
 	helpFlag: string,
 	depth: number,
+	parser: ParserOption,
 ): Promise<string> {
 	// Throws
 	const rawHelpString = await getHelpString(executable, [...subcommands, helpFlag])
 
-	// Attempt to parse typical Yargs help output
-	const programInfo = helpStringToObject(rawHelpString)
+	// Attempt to parse the help output, unless the 'none' parser was requested
+	const programInfo = parser === 'none' ? undefined : helpStringToObject(rawHelpString, parser)
 
-	// Fall back to basic code fence output if parsing fails
+	// Fall back to basic code fence output if parsing fails or was skipped
 	if (programInfo === undefined) {
 		log.debug(`Falling back to basic cli help text output.`)
 		return renderHelpMarkdownBasic(rawHelpString)
 	}
 
 	// This might recurse for subcommands
-	return renderHelpMarkdownObject(executable, subcommands, helpFlag, depth, programInfo)
+	return renderHelpMarkdownObject(executable, subcommands, helpFlag, depth, parser, programInfo)
 }
 
 async function renderHelpMarkdownObject(
@@ -50,6 +61,7 @@ async function renderHelpMarkdownObject(
 	subcommands: string[],
 	helpFlag: string,
 	depth: number,
+	parser: ParserOption,
 	programInfo: ProgramInfo,
 ): Promise<string> {
 	if (depth <= 0) {
@@ -76,6 +88,7 @@ async function renderHelpMarkdownObject(
 				[...subcommands, command.commandName],
 				helpFlag,
 				depth - 1,
+				parser,
 			)
 			// Recursion limit returns empty string
 			if (subCommandHelp === '') {

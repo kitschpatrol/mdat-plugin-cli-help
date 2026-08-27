@@ -42,12 +42,23 @@ export type ProgramInfo = {
 // Yargs second since it's the most common format.
 // Meow last since it has the simplest grammar.
 /* eslint-disable perfectionist/sort-objects */
-export default {
+const parsers = {
 	commander: helpStringToObjectCommander,
 	yargs: helpStringToObjectYargs,
 	meow: helpStringToObjectMeow,
 }
 /* eslint-enable perfectionist/sort-objects */
+
+export type ParserName = keyof typeof parsers
+
+/**
+ * Parser selection strategy for help output. `'auto'` tries all parsers in
+ * order, a specific parser name tries only that parser, and `'none'` skips
+ * parsing so the raw help output is rendered as-is.
+ */
+export type ParserOption = 'auto' | 'none' | ParserName
+
+export default parsers
 
 // Helper functions for the parsers
 
