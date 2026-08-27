@@ -8,5 +8,4 @@ export default knipConfig({
 		'test/assets/fixtures/yargs-wrapped-cli.js',
 		'test/assets/fixtures/commander-cli.js',
 	],
-	ignoreDependencies: ['type-fest', 'yargs', 'commander', '@types/yargs'],
 })

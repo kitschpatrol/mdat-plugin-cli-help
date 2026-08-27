@@ -4,5 +4,5 @@
 		"types": ["which", "node", "yargs"]
 	},
 	"include": ["**/**.*"],
-	"exclude": ["**/dist/"]
+	"exclude": ["dist/"]
 }

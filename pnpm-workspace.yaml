@@ -13,11 +13,7 @@ overrides:
   normalize-package-data: ^9.0.0
 allowBuilds:
   esbuild: true
-  puppeteer: true
   oxc-resolver: true
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - '@kitschpatrol/*'
-  - mdat
-  - remark-mdat
-  - execa@10.0.1
