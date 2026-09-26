@@ -1,6 +1,6 @@
 import { execa } from 'execa'
 import type { ParserOption, ProgramInfo } from './parsers/index'
-import { helpObjectToMarkdown } from './help-object-to-markdown'
+import { DEFAULT_HEADING_LEVEL, helpObjectToMarkdown } from './help-object-to-markdown'
 import { helpStringToObject } from './help-string-to-object'
 import { log } from './log'
 
@@ -16,6 +16,9 @@ import { log } from './log'
  * @param parser - Help output parser selection. `'auto'` tries all parsers in
  *   order, a specific parser name tries only that parser, and `'none'` skips
  *   parsing so the raw help output is rendered in a code fence.
+ * @param headingLevel - Markdown heading level of the command and subcommand
+ *   headings. Defaults to 4, which suits a rule placed under a `### CLI`
+ *   section.
  */
 export async function getHelpMarkdown(
 	command: string,
@@ -23,6 +26,7 @@ export async function getHelpMarkdown(
 	depth?: number,
 	subcommands: string[] = [],
 	parser: ParserOption = 'auto',
+	headingLevel = DEFAULT_HEADING_LEVEL,
 ): Promise<string> {
 	return getHelpMarkdownInternal(
 		command,
@@ -30,6 +34,7 @@ export async function getHelpMarkdown(
 		helpFlag,
 		depth ?? Number.MAX_SAFE_INTEGER,
 		parser,
+		headingLevel,
 	)
 }
 
@@ -39,6 +44,7 @@ async function getHelpMarkdownInternal(
 	helpFlag: string,
 	depth: number,
 	parser: ParserOption,
+	headingLevel: number,
 ): Promise<string> {
 	// Throws
 	const rawHelpString = await getHelpString(executable, [...subcommands, helpFlag])
@@ -53,7 +59,15 @@ async function getHelpMarkdownInternal(
 	}
 
 	// This might recurse for subcommands
-	return renderHelpMarkdownObject(executable, subcommands, helpFlag, depth, parser, programInfo)
+	return renderHelpMarkdownObject(
+		executable,
+		subcommands,
+		helpFlag,
+		depth,
+		parser,
+		headingLevel,
+		programInfo,
+	)
 }
 
 async function renderHelpMarkdownObject(
@@ -62,6 +76,7 @@ async function renderHelpMarkdownObject(
 	helpFlag: string,
 	depth: number,
 	parser: ParserOption,
+	headingLevel: number,
 	programInfo: ProgramInfo,
 ): Promise<string> {
 	if (depth <= 0) {
@@ -69,7 +84,7 @@ async function renderHelpMarkdownObject(
 		return ''
 	}
 
-	let markdown = helpObjectToMarkdown(programInfo, depth)
+	let markdown = helpObjectToMarkdown(programInfo, depth, headingLevel)
 
 	// Check for subcommands
 	if (programInfo.commands) {
@@ -89,6 +104,7 @@ async function renderHelpMarkdownObject(
 				helpFlag,
 				depth - 1,
 				parser,
+				headingLevel,
 			)
 			// Recursion limit returns empty string
 			if (subCommandHelp === '') {

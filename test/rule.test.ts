@@ -14,6 +14,8 @@ const cliHelpRule = cliHelpPlugin['cli-help']
 const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
 
 const RAW_HELP_FENCE_REGEX = /^```txt/v
+const DEFAULT_COMMAND_HEADING_REGEX = /^#### Command:/v
+const LEVEL_2_COMMAND_HEADING_REGEX = /^## Command:/v
 
 // Load all --help command output samples in ./assets/help-supported
 const helpSamplesSupported = fs
@@ -115,6 +117,36 @@ describe('parser option', { timeout: 60_000 }, () => {
 	it('should reject invalid parser values', async () => {
 		// @ts-expect-error - Types not narrowing...
 		await expect(cliHelpRule.content({ command: cliPath, parser: 'invalid' })).rejects.toThrow()
+	})
+})
+
+describe('headingLevel option', { timeout: 60_000 }, () => {
+	// Meow-based test CLI
+	const cliPath = `${importMetaDirname}/assets/cli.js`
+
+	it('should render command headings at level 4 by default', () => {
+		const object = helpStringToObject(helpSamplesSupported['mdat --help']!)
+		expect(helpObjectToMarkdown(object!).startsWith('#### Command: `mdat`')).toBe(true)
+		expect(helpObjectToMarkdown(object!, undefined, 2).startsWith('## Command: `mdat`')).toBe(true)
+	})
+
+	it('should use the default heading level through the rule', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath })
+		expect(helpMarkdown).toMatch(DEFAULT_COMMAND_HEADING_REGEX)
+	})
+
+	it('should render command headings at the requested level through the rule', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath, headingLevel: 2 })
+		expect(helpMarkdown).toMatch(LEVEL_2_COMMAND_HEADING_REGEX)
+	})
+
+	it('should reject heading levels outside 1-6', async () => {
+		// @ts-expect-error - Types not narrowing...
+		await expect(cliHelpRule.content({ command: cliPath, headingLevel: 7 })).rejects.toThrow()
 	})
 })
 

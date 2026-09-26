@@ -13,6 +13,7 @@ const cliHelpRule: Rule = {
 			.object({
 				command: z.string().optional(),
 				depth: z.number().optional(),
+				headingLevel: z.number().int().min(1).max(6).optional(),
 				helpFlag: z.string().optional(),
 				parser: z.enum(['auto', 'commander', 'meow', 'none', 'yargs']).optional(),
 				subcommand: z.string().optional(),
@@ -28,6 +29,7 @@ const cliHelpRule: Rule = {
 			validOptions?.depth,
 			subcommands,
 			validOptions?.parser,
+			validOptions?.headingLevel,
 		)
 	},
 }

@@ -121,6 +121,12 @@ By default, the rule detects the help output format by trying each supported par
 
 Valid values are `"auto"` (the default), `"commander"`, `"yargs"`, `"meow"`, and `"none"`. Naming a specific parser tries only that parser, and falls back to the raw help output in a code block (with a warning) if it doesn't match. `"none"` skips parsing entirely and always embeds the raw help output, which also means no subcommands are discovered for recursion.
 
+Command and subcommand headings are rendered at level 4 (`####`), which suits a rule placed under a `### CLI` section. Pass `headingLevel` to change this:
+
+```markdown
+<!-- cli-help({ command: "mdat", headingLevel: 3 }) -->
+```
+
 The command is also aliased under the `<!-- cli -->` keyword.
 
 This would have equivalent output to the above:

@@ -1,5 +1,11 @@
 import type { Command, ProgramInfo } from './parsers/index'
 
+/**
+ * Default Markdown heading level of the command and subcommand headings. Suits
+ * a rule placed under a `### CLI` section.
+ */
+export const DEFAULT_HEADING_LEVEL = 4
+
 type CommandContext = {
 	canRecurse: boolean
 	commandsOnly: boolean
@@ -13,15 +19,20 @@ type CommandContext = {
 /**
  * Converts a ProgramInfo object extracted by one of the help parsers into a big
  * beautiful Markdown table.
+ *
+ * @param programInfo - Parsed help output
+ * @param depthRemaining - Remaining subcommand recursion depth
+ * @param headingLevel - Markdown heading level of the command heading
  */
 export function helpObjectToMarkdown(
 	programInfo: ProgramInfo,
 	depthRemaining: number = Number.MAX_SAFE_INTEGER,
+	headingLevel = DEFAULT_HEADING_LEVEL,
 ): string {
 	const markdownLines: string[] = []
 	const commandContext = determineCommandContext(programInfo, depthRemaining)
 
-	markdownLines.push(formatSectionTitle(commandContext))
+	markdownLines.push(formatSectionTitle(commandContext, headingLevel))
 
 	// Note side-effects, might modify programInfo.commands
 	// eslint-disable-next-line unicorn/prefer-single-call
@@ -137,9 +148,10 @@ function determineCommandContext(programInfo: ProgramInfo, depthRemaining: numbe
 
 // Formatters
 
-function formatSectionTitle(context: CommandContext): string {
+function formatSectionTitle(context: CommandContext, headingLevel: number): string {
 	const commandPrefix = context.isTopLevel ? 'Command' : 'Subcommand'
-	return `#### ${commandPrefix}: \`${context.fullCommandName}\``
+	const headingPrefix = '#'.repeat(headingLevel)
+	return `${headingPrefix} ${commandPrefix}: \`${context.fullCommandName}\``
 }
 
 function formatDescription(programInfo: ProgramInfo, context: CommandContext): string {
