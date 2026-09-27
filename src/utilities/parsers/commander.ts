@@ -329,19 +329,11 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	}
 
 	private getArray(context: any): any[] | undefined {
-		if (context === undefined) {
-			return undefined
-		}
-
-		return context.map((entry: any) => entry.image)
+		return context === undefined ? undefined : context.map((entry: any) => entry.image)
 	}
 
 	private getString(context: any): string | undefined {
-		if (context === undefined) {
-			return undefined
-		}
-
-		return context.map((entry: any) => entry.image).join(' ')
+		return context === undefined ? undefined : context.map((entry: any) => entry.image).join(' ')
 	}
 
 	/**
