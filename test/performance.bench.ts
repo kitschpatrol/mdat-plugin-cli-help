@@ -1,13 +1,47 @@
 /* eslint-disable unicorn/no-array-reduce */
+/* eslint-disable test/expect-expect -- Benchmarks are generated from data and report timing tables rather than asserting. */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { bench, describe } from 'vitest'
+import { describe, test } from 'vitest'
 import { helpObjectToMarkdown } from '../src/utilities/help-object-to-markdown'
 import { helpStringToObject } from '../src/utilities/help-string-to-object'
 
 const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
+
+// ---------------------------------------------------------------------------
+// Baseline comparison
+// ---------------------------------------------------------------------------
+
+const writeBaseline = process.env.BENCH_BASELINE === 'true'
+const baselineDirectory = path.join(importMetaDirname, 'benchmarks', 'baseline')
+
+/**
+ * Register a benchmark as a test. With `BENCH_BASELINE=true` the result is
+ * written to `test/benchmarks/baseline/`, otherwise it is compared against the
+ * stored baseline when one exists.
+ */
+function bench(name: string, fn: () => void): void {
+	const slug = name
+		.toLowerCase()
+		.replaceAll(/[^a-z0-9]+/gv, '-')
+		.replaceAll(/^-|-$/gv, '')
+	const baselinePath = path.join(baselineDirectory, `${slug}.json`)
+
+	test(name, async (context) => {
+		if (writeBaseline) {
+			await context.bench('current', { writeResult: baselinePath }, fn).run()
+		} else if (fs.existsSync(baselinePath)) {
+			await context.bench.compare(
+				context.bench.from('baseline', baselinePath),
+				context.bench('current', fn),
+			)
+		} else {
+			await context.bench('current', fn).run()
+		}
+	})
+}
 
 // ---------------------------------------------------------------------------
 // Load real-world fixtures

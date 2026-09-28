@@ -21,9 +21,9 @@ const pathExtensions: Set<string> = isWindows
 export async function isExecutable(filePath: string, strictExtensions = false): Promise<boolean> {
 	try {
 		await fs.access(filePath, fs.constants.X_OK)
-		return strictExtensions && isWindows
-			? pathExtensions.has(path.extname(filePath).toLowerCase())
-			: true
+		return (
+			!strictExtensions || !isWindows || pathExtensions.has(path.extname(filePath).toLowerCase())
+		)
 	} catch {
 		return false
 	}

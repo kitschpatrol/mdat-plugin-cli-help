@@ -320,12 +320,12 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 			arguments: this.getArray(context.argument),
 			choices: this.splitChoices(this.getString(context.choices)),
 			commandName: this.getString(context.commandName),
-			default: context.defaultInfo === undefined ? undefined : true,
+			default: context.defaultInfo !== undefined || undefined,
 			defaultValue: this.getString(context.defaultInfoDescription, true),
 			description: this.getString(context.description, true),
 			flags: this.getArray(context.flag),
 			parentCommandName: this.getString(context.parentCommandName),
-			required: context.required === undefined ? undefined : true,
+			required: context.required !== undefined || undefined,
 			type: this.getString(context.type, true),
 		}
 	}
