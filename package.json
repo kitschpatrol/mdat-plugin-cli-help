@@ -53,17 +53,17 @@
 		"zod": "^4.6.5"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^8.10.1",
+		"@kitschpatrol/shared-config": "^8.11.0",
 		"@types/node": "~24.13.3",
 		"@types/yargs": "^17.0.35",
 		"bumpp": "^12.3.0",
 		"commander": "^15.0.0",
-		"mdat": "^3.4.1",
+		"mdat": "^3.5.0",
 		"meow": "^14.1.0",
 		"shx": "^0.4.0",
 		"tsdown": "^0.23.0",
 		"typescript": "~6.0.3",
-		"vitest": "^5.0.2",
+		"vitest": "^5.0.3",
 		"yargs": "^18.2.0"
 	},
 	"peerDependencies": {

@@ -333,13 +333,9 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	private clean(text: string): string {
 		// Remove brackets. default prefix, and trim
 		// Special case for `array` type positionals like `[default: ["readme.md"]]`
-		if (text.endsWith(']]')) {
-			// eslint-disable-next-line regexp/no-unused-capturing-group
-			return text.replaceAll(/(^\[default:\s*)|(\]$)/gv, '')
-		}
-
-		// eslint-disable-next-line regexp/no-unused-capturing-group
-		return text.replaceAll(/^[\s\[]*(default:)?\s*|[\s\]]*$/gv, '')
+		return text.endsWith(']]')
+			? text.replaceAll(/^\[default:\s*|\]$/gv, '')
+			: text.replaceAll(/^[\s\[]*(?:default:)?\s*|[\s\]]*$/gv, '')
 	}
 
 	private getArray(context: any): any[] | undefined {
