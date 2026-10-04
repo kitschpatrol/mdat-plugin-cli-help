@@ -17,8 +17,8 @@ import { log } from './log'
  *   order, a specific parser name tries only that parser, and `'none'` skips
  *   parsing so the raw help output is rendered in a code fence.
  * @param headingLevel - Markdown heading level of the command and subcommand
- *   headings. Defaults to 4, which suits a rule placed under a `### CLI`
- *   section.
+ *   headings. Defaults to 5, one below the rule's default `#### Commands`
+ *   section heading.
  */
 export async function getHelpMarkdown(
 	command: string,

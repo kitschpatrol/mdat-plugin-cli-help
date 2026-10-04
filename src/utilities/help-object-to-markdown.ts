@@ -1,10 +1,10 @@
 import type { Command, ProgramInfo } from './parsers/index'
 
 /**
- * Default Markdown heading level of the command and subcommand headings. Suits
- * a rule placed under a `### CLI` section.
+ * Default Markdown heading level of the command and subcommand headings, one
+ * below the rule's default `#### Commands` section heading.
  */
-export const DEFAULT_HEADING_LEVEL = 4
+export const DEFAULT_HEADING_LEVEL = 5
 
 type CommandContext = {
 	canRecurse: boolean

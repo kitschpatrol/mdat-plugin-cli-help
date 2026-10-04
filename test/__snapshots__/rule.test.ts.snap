@@ -1,7 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`cli help invocation > should correctly resolve binary names that are in package.json but not on the path 1`] = `
-"#### Command: \`mdat\`
+"#### Commands
+
+##### Command: \`mdat\`
 
 Work with MDAT placeholder comments in Markdown files.
 
@@ -26,7 +28,7 @@ mdat [command] [files..] [options]
 
 _See the sections below for more information on each subcommand._
 
-#### Subcommand: \`mdat expand\`
+##### Subcommand: \`mdat expand\`
 
 Expand MDAT placeholder comments. If no files are provided, the closest readme.md is expanded.
 
@@ -53,7 +55,7 @@ mdat expand [files..] [options]
 | \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
 
 
-#### Subcommand: \`mdat collapse\`
+##### Subcommand: \`mdat collapse\`
 
 Collapse MDAT placeholder comments. If no files are provided, the closest readme.md is collapsed.
 
@@ -79,7 +81,7 @@ mdat collapse [files..] [options]
 | \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
 
 
-#### Subcommand: \`mdat strip\`
+##### Subcommand: \`mdat strip\`
 
 Strip MDAT comments while preserving expanded content. If no files are provided, the closest readme.md is stripped.
 
@@ -105,7 +107,7 @@ mdat strip [files..] [options]
 | \`--version\`<br>\`-v\` | Show version number | \`boolean\` |  |
 
 
-#### Subcommand: \`mdat check\`
+##### Subcommand: \`mdat check\`
 
 Check if MDAT placeholder comments are up to date. Exits with code 1 if any files have stale or unexpanded content.
 
@@ -129,7 +131,7 @@ mdat check [files..] [options]
 | \`--version\`<br>\`-v\` | Show version number | \`boolean\` |
 
 
-#### Subcommand: \`mdat create\`
+##### Subcommand: \`mdat create\`
 
 Create a new Markdown file from a template.
 
@@ -154,7 +156,7 @@ mdat create [options]
 `;
 
 exports[`cli help invocation > should get help Markdown directly from the output of a command 1`] = `
-"#### Command: \`foo\`
+"##### Command: \`foo\`
 
 Mdat plugin to generate tabular help documentation for CLI tools in Markdown files.
 
@@ -171,7 +173,7 @@ foo <input>
 `;
 
 exports[`cli help object to markdown > should convert a help object or "mdat --help" to valid markdown 1`] = `
-"#### Command: \`mdat\`
+"##### Command: \`mdat\`
 
 Work with MDAT placeholder comments in any Markdown file.
 
@@ -197,7 +199,7 @@ _See the sections below for more information on each subcommand._"
 `;
 
 exports[`cli help object to markdown > should convert a help object or "mdat expand --help" to valid markdown 1`] = `
-"#### Subcommand: \`mdat expand\`
+"##### Subcommand: \`mdat expand\`
 
 Expand MDAT placeholder comments.
 
@@ -228,7 +230,7 @@ mdat expand <files..> [options]
 `;
 
 exports[`cli help object to markdown > should convert a help object or "mdat readme --help" to valid markdown 1`] = `
-"#### Subcommand: \`mdat readme\`
+"##### Subcommand: \`mdat readme\`
 
 Work with MDAT comments in your readme.md.
 
@@ -254,7 +256,7 @@ _See the sections below for more information on each subcommand._"
 `;
 
 exports[`cli help object to markdown > should convert a help object or "mdat readme init --help" to valid markdown 1`] = `
-"#### Subcommand: \`mdat readme init\`
+"##### Subcommand: \`mdat readme init\`
 
 Interactively create a new readme.md file with sensible default MDAT comment placeholders.
 
@@ -279,7 +281,7 @@ mdat readme init [options]
 `;
 
 exports[`cli help object to markdown > should convert a help object or "mdat-config --help" to valid markdown 1`] = `
-"#### Subcommand: \`mdat-config check\`
+"##### Subcommand: \`mdat-config check\`
 
 Check for and report issues.
 
@@ -303,7 +305,7 @@ mdat-config check [files..]
 `;
 
 exports[`cli help object to markdown > should convert a help object or "prettier-detect --help" to valid markdown 1`] = `
-"#### Command: \`prettier-detect\`
+"##### Command: \`prettier-detect\`
 
 Get the least disruptive Prettier config to add to an existing project.
 
@@ -329,7 +331,7 @@ prettier-detect <directory>
 `;
 
 exports[`cli help object to markdown > should convert a help object or "shared-config --help" to valid markdown 1`] = `
-"#### Command: \`shared-config\`
+"##### Command: \`shared-config\`
 
 Linting and formatting for web projects.
 
@@ -351,7 +353,7 @@ shared-config [<file|glob> ...]
 `;
 
 exports[`cli help object to markdown > should convert a help object or "snip --help" to valid markdown 1`] = `
-"#### Command: \`snip\`
+"##### Command: \`snip\`
 
 A CLI tool for snippet management.
 
@@ -386,7 +388,7 @@ _See the sections below for more information on each subcommand._"
 `;
 
 exports[`cli help object to markdown > should convert a help object or "tldraw-cli --help" to valid markdown 1`] = `
-"#### Command: \`tldraw-cli\`
+"##### Command: \`tldraw-cli\`
 
 CLI tools for tldraw.
 
@@ -414,7 +416,7 @@ _See the sections below for more information on each subcommand._"
 `;
 
 exports[`cli help object to markdown > should convert a help object or "tldraw-cli export --help" to valid markdown 1`] = `
-"#### Subcommand: \`tldraw-cli export\`
+"##### Subcommand: \`tldraw-cli export\`
 
 Export a local tldraw ".tldr" file or a tldraw.com URL to an svg, png, json, or tldr file. Prints the absolute path(s) to the exported image(s) to stdout.
 
@@ -446,7 +448,7 @@ tldraw-cli export <files-or-urls..>
 `;
 
 exports[`cli help object to markdown > should convert a help object or "tldraw-cli open --help" to valid markdown 1`] = `
-"#### Subcommand: \`tldraw-cli open\`
+"##### Subcommand: \`tldraw-cli open\`
 
 Open a tldraw \`.tldr\` file or tldraw.com URL your default browser. Uses a locally-hosted instance of tldraw. Call \`open\` without an argument to open a blank sketch. Sketches opened via URL are temporarily copied to the local system, and will not be kept in sync with tldraw.com. This process does not exit until the browser is closed.
 
@@ -471,7 +473,7 @@ tldraw-cli open [files-or-urls..]
 `;
 
 exports[`cli help object to markdown > should convert a help object or "yanki --help" to valid markdown 1`] = `
-"#### Command: \`yanki\`
+"##### Command: \`yanki\`
 
 Run a Yanki command. Defaults to \`sync\` if a command is not provided.
 
@@ -2573,7 +2575,7 @@ exports[`cli help string to object > should convert "yanki --help" to a valid pr
 `;
 
 exports[`parser option > should parse with a specific matching parser 1`] = `
-"#### Command: \`foo\`
+"##### Command: \`foo\`
 
 Mdat plugin to generate tabular help documentation for CLI tools in Markdown files.
 

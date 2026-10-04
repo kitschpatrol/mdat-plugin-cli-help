@@ -14,8 +14,12 @@ const cliHelpRule = cliHelpPlugin['cli-help']
 const importMetaDirname = path.dirname(fileURLToPath(import.meta.url))
 
 const RAW_HELP_FENCE_REGEX = /^```txt/v
-const DEFAULT_COMMAND_HEADING_REGEX = /^#### Command:/v
-const LEVEL_2_COMMAND_HEADING_REGEX = /^## Command:/v
+const RAW_HELP_WITH_HEADING_REGEX = /^#### Commands\n\n```txt/v
+const DEFAULT_COMMAND_HEADING_REGEX = /^##### Command:/v
+const DEFAULT_HEADINGS_REGEX = /^#### Commands\n\n##### Command:/v
+const LEVEL_2_HEADINGS_REGEX = /^## Commands\n\n### Command:/v
+const LEVEL_6_HEADINGS_REGEX = /^###### Commands\n\n###### Command:/v
+const CUSTOM_HEADINGS_REGEX = /^#### Reference\n\n##### Command:/v
 
 // Load all --help command output samples in ./assets/help-supported
 const helpSamplesSupported = fs
@@ -110,7 +114,11 @@ describe('parser option', { timeout: 60_000 }, () => {
 	it('should accept the parser option through the rule', async () => {
 		// @ts-expect-error - Types not narrowing...
 		// eslint-disable-next-line ts/no-unsafe-assignment
-		const helpMarkdown = await cliHelpRule.content({ command: cliPath, parser: 'none' })
+		const helpMarkdown = await cliHelpRule.content({
+			command: cliPath,
+			heading: false,
+			parser: 'none',
+		})
 		expect(helpMarkdown).toMatch(RAW_HELP_FENCE_REGEX)
 	})
 
@@ -120,33 +128,68 @@ describe('parser option', { timeout: 60_000 }, () => {
 	})
 })
 
-describe('headingLevel option', { timeout: 60_000 }, () => {
+describe('heading options', { timeout: 60_000 }, () => {
 	// Meow-based test CLI
 	const cliPath = `${importMetaDirname}/assets/cli.js`
 
-	it('should render command headings at level 4 by default', () => {
+	it('should render command headings at level 5 by default', () => {
 		const object = helpStringToObject(helpSamplesSupported['mdat --help']!)
-		expect(helpObjectToMarkdown(object!).startsWith('#### Command: `mdat`')).toBe(true)
+		expect(helpObjectToMarkdown(object!).startsWith('##### Command: `mdat`')).toBe(true)
 		expect(helpObjectToMarkdown(object!, undefined, 2).startsWith('## Command: `mdat`')).toBe(true)
 	})
 
-	it('should use the default heading level through the rule', async () => {
+	it('should emit a level 4 section heading above level 5 command headings by default', async () => {
 		// @ts-expect-error - Types not narrowing...
 		// eslint-disable-next-line ts/no-unsafe-assignment
 		const helpMarkdown = await cliHelpRule.content({ command: cliPath })
-		expect(helpMarkdown).toMatch(DEFAULT_COMMAND_HEADING_REGEX)
+		expect(helpMarkdown).toMatch(DEFAULT_HEADINGS_REGEX)
 	})
 
-	it('should render command headings at the requested level through the rule', async () => {
+	it('should render the section heading at the requested level with command headings one below', async () => {
 		// @ts-expect-error - Types not narrowing...
 		// eslint-disable-next-line ts/no-unsafe-assignment
 		const helpMarkdown = await cliHelpRule.content({ command: cliPath, headingLevel: 2 })
-		expect(helpMarkdown).toMatch(LEVEL_2_COMMAND_HEADING_REGEX)
+		expect(helpMarkdown).toMatch(LEVEL_2_HEADINGS_REGEX)
+	})
+
+	it('should not nest command headings deeper than level 6', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath, headingLevel: 6 })
+		expect(helpMarkdown).toMatch(LEVEL_6_HEADINGS_REGEX)
+	})
+
+	it('should suppress the section heading without moving command headings', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath, heading: false })
+		expect(helpMarkdown).toMatch(DEFAULT_COMMAND_HEADING_REGEX)
+	})
+
+	it('should override the section heading text', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath, heading: 'Reference' })
+		expect(helpMarkdown).toMatch(CUSTOM_HEADINGS_REGEX)
+	})
+
+	it('should emit the section heading above unparsed help output', async () => {
+		// @ts-expect-error - Types not narrowing...
+		// eslint-disable-next-line ts/no-unsafe-assignment
+		const helpMarkdown = await cliHelpRule.content({ command: cliPath, parser: 'none' })
+		expect(helpMarkdown).toMatch(RAW_HELP_WITH_HEADING_REGEX)
 	})
 
 	it('should reject heading levels outside 1-6', async () => {
 		// @ts-expect-error - Types not narrowing...
 		await expect(cliHelpRule.content({ command: cliPath, headingLevel: 7 })).rejects.toThrow()
+	})
+
+	it('should reject invalid heading values', async () => {
+		// @ts-expect-error - Types not narrowing...
+		await expect(cliHelpRule.content({ command: cliPath, heading: '' })).rejects.toThrow()
+		// @ts-expect-error - Types not narrowing...
+		await expect(cliHelpRule.content({ command: cliPath, heading: 2 })).rejects.toThrow()
 	})
 })
 

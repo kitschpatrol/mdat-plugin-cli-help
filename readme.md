@@ -66,7 +66,9 @@ Then run the `mdat` CLI command on your Markdown file to expand the rule and emb
 ````markdown
 <!-- cli-help({ command: "mdat", depth: 1 }) -->
 
-#### Command: `mdat`
+#### Commands
+
+##### Command: `mdat`
 
 Work with MDAT placeholder comments in any Markdown file.
 
@@ -121,11 +123,35 @@ By default, the rule detects the help output format by trying each supported par
 
 Valid values are `"auto"` (the default), `"commander"`, `"yargs"`, `"meow"`, and `"none"`. Naming a specific parser tries only that parser, and falls back to the raw help output in a code block (with a warning) if it doesn't match. `"none"` skips parsing entirely and always embeds the raw help output, which also means no subcommands are discovered for recursion.
 
-Command and subcommand headings are rendered at level 4 (`####`), which suits a rule placed under a `### CLI` section. Pass `headingLevel` to change this:
+The rule emits its own `#### Commands` section heading, with command and subcommand headings one level below it. The default level suits placement under a level-three "CLI" section, as in mdat's readme template:
 
 ```markdown
-<!-- cli-help({ command: "mdat", headingLevel: 3 }) -->
+## Usage
+
+### CLI
+
+<!-- cli-help -->
+
+#### Examples
 ```
+
+Pass `headingLevel` to move the section heading, and `heading` to change its text:
+
+```markdown
+<!-- cli-help({ command: "mdat", headingLevel: 2, heading: "Command line" }) -->
+```
+
+Pass `heading: false` to leave the section heading out, which is what you want when you've written your own heading above the placeholder, or when several placeholders share one section:
+
+```markdown
+#### Commands
+
+<!-- cli-help({ command: "mdat", subcommand: "expand", heading: false }) -->
+
+<!-- cli-help({ command: "mdat", subcommand: "check", heading: false }) -->
+```
+
+Command and subcommand headings stay one level below `headingLevel` whether or not the section heading is shown.
 
 The command is also aliased under the `<!-- cli -->` keyword.
 

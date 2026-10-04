@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`commander recursive subcommand help > should recursively resolve commander subcommand help output 1`] = `
-"#### Command: \`test-cli\`
+"##### Command: \`test-cli\`
 
 A test CLI for normalization verification.
 
@@ -29,7 +29,7 @@ test-cli [options] [command]
 
 _See the sections below for more information on each subcommand._
 
-#### Subcommand: \`test-cli greet\`
+##### Subcommand: \`test-cli greet\`
 
 Greet someone by name
 
@@ -44,7 +44,7 @@ test-cli greet [options] <name>
 | \`--help\`<br>\`-h\` | display help for command |
 
 
-#### Subcommand: \`test-cli serve\`
+##### Subcommand: \`test-cli serve\`
 
 Start a server
 
