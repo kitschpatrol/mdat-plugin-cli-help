@@ -6,7 +6,7 @@ export default eslintConfig({
 			'depend/ban-dependencies': [
 				'error',
 				{
-					allowed: ['execa', 'read-pkg'],
+					allowed: ['execa'],
 				},
 			],
 		},

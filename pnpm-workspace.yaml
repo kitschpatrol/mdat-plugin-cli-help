@@ -12,18 +12,25 @@ publicHoistPattern:
 overrides:
   normalize-package-data: ^9.0.0
 minimumReleaseAgeExclude:
-  - '@kitschpatrol/cspell-config@8.11.0'
-  - '@kitschpatrol/eslint-config@8.11.0'
-  - '@kitschpatrol/knip-config@8.11.0'
-  - '@kitschpatrol/mdat-config@8.11.0'
-  - '@kitschpatrol/prettier-config@8.11.0'
-  - '@kitschpatrol/remark-config@8.11.0'
-  - '@kitschpatrol/repo-config@8.11.0'
-  - '@kitschpatrol/shared-config@8.11.0'
-  - '@kitschpatrol/stylelint-config@8.11.0'
-  - '@kitschpatrol/typescript-config@8.11.0'
-  - '@pnpm/lockfile.fs@1100.2.12'
-  - eslint-plugin-jsdoc@65.1.0
-  - mdat@3.5.0
+  - '@kitschpatrol/cspell-config@8.12.1'
+  - '@kitschpatrol/eslint-config@8.12.1'
+  - '@kitschpatrol/knip-config@8.12.1'
+  - '@kitschpatrol/mdat-config@8.12.1'
+  - '@kitschpatrol/prettier-config@8.12.1'
+  - '@kitschpatrol/remark-config@8.12.1'
+  - '@kitschpatrol/repo-config@8.12.1'
+  - '@kitschpatrol/shared-config@8.12.1'
+  - '@kitschpatrol/stylelint-config@8.12.1'
+  - '@kitschpatrol/typescript-config@8.12.1'
+  - lognow@0.8.5
+  - mdat@3.6.2
+  - '@kitschpatrol/safe-stable-stringify@2.5.0-fork.2'
+  - metascope@0.12.2
+  - read-pyproject@0.4.1
+  - remark-mdat@3.1.1
 allowBuilds:
   unrs-resolver: true
+peerDependencyRules:
+  allowedVersions:
+    # No eslint 10 release yet, but runtime-compatible (used via eslint-plugin-astro)
+    'eslint-plugin-jsx-a11y>eslint': '10'
