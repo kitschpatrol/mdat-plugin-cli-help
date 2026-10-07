@@ -80,7 +80,7 @@ async function renderHelpMarkdownObject(
 	programInfo: ProgramInfo,
 ): Promise<string> {
 	if (depth <= 0) {
-		log.warn(`Max CLI command help depth reached, stopping recursion`)
+		log.debug(`Max CLI command help depth reached, stopping recursion`)
 		return ''
 	}
 
