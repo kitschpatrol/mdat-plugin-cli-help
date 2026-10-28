@@ -50,5 +50,4 @@ const cliHelpRule: Rule = {
 	},
 }
 
-// eslint-disable-next-line unicorn/no-top-level-side-effects
 export default defineConfig({ cli: cliHelpRule, 'cli-help': cliHelpRule })

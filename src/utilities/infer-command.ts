@@ -95,11 +95,7 @@ async function getCommandPathFromPackage(commandName: string): Promise<string | 
 	if (binObject !== undefined && typeof binObject !== 'string') {
 		// Check all bin entries and values for a match
 		for (const [key, value] of Object.entries(binObject)) {
-			if (key === commandName) {
-				return value
-			}
-
-			if (path.normalize(value) === path.normalize(commandName)) {
+			if (key === commandName || path.normalize(value) === path.normalize(commandName)) {
 				return value
 			}
 		}

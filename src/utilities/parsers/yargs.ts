@@ -333,9 +333,10 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	private clean(text: string): string {
 		// Remove brackets. default prefix, and trim
 		// Special case for `array` type positionals like `[default: ["readme.md"]]`
-		return text.endsWith(']]')
-			? text.replaceAll(/^\[default:\s*|\]$/gv, '')
-			: text.replaceAll(/^[\s\[]*(?:default:)?\s*|[\s\]]*$/gv, '')
+		return text.replaceAll(
+			text.endsWith(']]') ? /^\[default:\s*|\]$/gv : /^[\s\[]*(?:default:)?\s*|[\s\]]*$/gv,
+			'',
+		)
 	}
 
 	private getArray(context: any): any[] | undefined {
@@ -362,12 +363,10 @@ class CliHelpToObjectVisitor extends parser.getBaseCstVisitorConstructor() {
 	}
 
 	private splitChoices(text: string | undefined): string[] | undefined {
-		if (text === undefined) {
-			return undefined
-		}
-
 		// Remove brackets and commas from the outside of the text
-		return this.clean(text.replaceAll(/^\[choices:\s/gv, '')).split(', ')
+		return text === undefined
+			? undefined
+			: this.clean(text.replaceAll(/^\[choices:\s/gv, '')).split(', ')
 	}
 }
 

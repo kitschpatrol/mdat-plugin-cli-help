@@ -86,11 +86,11 @@ export function helpObjectToMarkdown(
 				['Option', 'Argument', 'Description', 'Type', 'Default'],
 				programInfo.options.map((option) => [
 					// Combine flags and aliases
-					option.flags !== undefined || option.aliases !== undefined
-						? [...(option.flags ?? []), ...(option.aliases ?? [])]
+					option.flags === undefined && option.aliases === undefined
+						? ''
+						: [...(option.flags ?? []), ...(option.aliases ?? [])]
 								.map((flag) => `\`${flag}\``)
-								.join('<br>')
-						: '',
+								.join('<br>'),
 
 					option.arguments ? option.arguments.map((argument) => `\`${argument}\``).join(' ') : '',
 
@@ -124,7 +124,7 @@ export function helpObjectToMarkdown(
 
 function determineCommandContext(programInfo: ProgramInfo, depthRemaining: number): CommandContext {
 	const isTopLevel = programInfo.subcommandName === undefined
-	const hasMultipleSubcommands = programInfo.commands ? programInfo.commands.length > 1 : false
+	const hasMultipleSubcommands = (programInfo.commands?.length ?? 0) > 1
 	const canRecurse = depthRemaining > 1
 	const defaultCommand = programInfo.commands?.find((command) => command.default)
 	const topLevelCommand = programInfo.commands?.find((command) => command.commandName === undefined)
