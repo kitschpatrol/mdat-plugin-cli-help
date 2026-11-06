@@ -8,4 +8,7 @@ export default knipConfig({
 		'test/assets/fixtures/yargs-wrapped-cli.js',
 		'test/assets/fixtures/commander-cli.js',
 	],
+	ignoreDependencies: [
+		'@kitschpatrol/chagent', // Typically invoked through bumpp's --execute argument, which Knip doesn't parse
+	],
 })
